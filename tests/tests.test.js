@@ -23,6 +23,8 @@ import get from "../src/get.js";
 import isArguments from "../src/isArguments.js";
 import isArrayLike from "../src/isArrayLike.js";
 import isArrayLikeObject from "../src/isArrayLikeObject.js";
+import isBoolean from "../src/isBoolean.js";
+import isBuffer from "../src/isBuffer.js";
 
 const skip_known_bugs = true;
 
@@ -311,6 +313,62 @@ describe("Yksikkötestit", () => {
         assert.strictEqual(result, "oletus");
       });
     });
+
+    describe("isArrayLike", () => {
+      test("Tunnistaa taulukkomaisen objektin", () => {
+        const obj = { length: 3, 0: "a", 1: "b", 2: "c" };
+        const result = isArrayLike(obj);
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista funktiota taulukkomaiseksi objektiksi", () => {
+        const func = function () {};
+        const result = isArrayLike(func);
+        assert.strictEqual(result, false);
+      });
+      test("Tunnistaa merkkijonon taulukkomaiseksi objektiksi", () => {
+        const result = isArrayLike("abc");
+        assert.strictEqual(result, true);
+      });
+      test("Tunnistaa taulukon taulukkomaiseksi objektiksi", () => {
+        const result = isArrayLike([1, 2, 3]);
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista luokkaa taulukkomaiseksi objektiksi", () => {
+        class MyClass {
+          static length = 3;
+        }
+        const result = isArrayLike(MyClass);
+        assert.strictEqual(result, false);
+      });
+    });
+
+    describe("isArrayLikeObject", () => {
+      test("Tunnistaa taulukkomaisen objektin", () => {
+        const obj = { length: 3, 0: "a", 1: "b", 2: "c" };
+        const result = isArrayLikeObject(obj);
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista funktiota taulukkomaiseksi objektiksi", () => {
+        const func = function () {};
+        const result = isArrayLikeObject(func);
+        assert.strictEqual(result, false);
+      });
+      test("Ei tunnista merkkijonoa taulukkomaiseksi objektiksi", () => {
+        const result = isArrayLikeObject("abc");
+        assert.strictEqual(result, false);
+      });
+      test("Tunnistaa taulukon taulukkomaiseksi objektiksi", () => {
+        const result = isArrayLikeObject([1, 2, 3]);
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista luokkaa taulukkomaiseksi objektiksi", () => {
+        class MyClass {
+          static length = 3;
+        }
+        const result = isArrayLikeObject(MyClass);
+        assert.strictEqual(result, false);
+      });
+    });
   });
 
   describe("Utility", () => {
@@ -374,58 +432,39 @@ describe("Yksikkötestit", () => {
       });
     });
 
-    describe("isArrayLike", () => {
-      test("Tunnistaa taulukkomaisen objektin", () => {
-        const obj = { length: 3, 0: "a", 1: "b", 2: "c" };
-        const result = isArrayLike(obj);
+    describe("isBoolean", () => {
+      test("Tunnistaa boolean-arvon", () => {
+        const result = isBoolean(true);
         assert.strictEqual(result, true);
       });
-      test("Ei tunnista funktiota taulukkomaiseksi objektiksi", () => {
-        const func = function () {};
-        const result = isArrayLike(func);
+      test("Tunnistaa boolean-objektin", () => {
+        const result = isBoolean(new Boolean(false));
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista muita arvoja booleaniksi", () => {
+        let result = isBoolean(0);
         assert.strictEqual(result, false);
-      });
-      test("Tunnistaa merkkijonon taulukkomaiseksi objektiksi", () => {
-        const result = isArrayLike("abc");
-        assert.strictEqual(result, true);
-      });
-      test("Tunnistaa taulukon taulukkomaiseksi objektiksi", () => {
-        const result = isArrayLike([1, 2, 3]);
-        assert.strictEqual(result, true);
-      });
-      test("Ei tunnista luokkaa taulukkomaiseksi objektiksi", () => {
-        class MyClass {
-          static length = 3;
-        }
-        const result = isArrayLike(MyClass);
+
+        result = isBoolean(NaN);
+        assert.strictEqual(result, false);
+
+        result = isBoolean(undefined);
+        assert.strictEqual(result, false);
+
+        result = isBoolean(null);
         assert.strictEqual(result, false);
       });
     });
 
-    describe("isArrayLikeObject", () => {
-      test("Tunnistaa taulukkomaisen objektin", () => {
-        const obj = { length: 3, 0: "a", 1: "b", 2: "c" };
-        const result = isArrayLikeObject(obj);
+    describe("isBuffer", () => {
+      test("Tunnistaa Buffer-objektin", () => {
+        const buffer = Buffer.from("test");
+        const result = isBuffer(buffer);
         assert.strictEqual(result, true);
       });
-      test("Ei tunnista funktiota taulukkomaiseksi objektiksi", () => {
-        const func = function () {};
-        const result = isArrayLikeObject(func);
-        assert.strictEqual(result, false);
-      });
-      test("Ei tunnista merkkijonoa taulukkomaiseksi objektiksi", () => {
-        const result = isArrayLikeObject("abc");
-        assert.strictEqual(result, false);
-      });
-      test("Tunnistaa taulukon taulukkomaiseksi objektiksi", () => {
-        const result = isArrayLikeObject([1, 2, 3]);
-        assert.strictEqual(result, true);
-      });
-      test("Ei tunnista luokkaa taulukkomaiseksi objektiksi", () => {
-        class MyClass {
-          static length = 3;
-        }
-        const result = isArrayLikeObject(MyClass);
+      test("Ei tunnista Uint8Array-objektia Bufferiksi", () => {
+        const uint8Array = new Uint8Array(4);
+        const result = isBuffer(uint8Array);
         assert.strictEqual(result, false);
       });
     });
