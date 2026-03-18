@@ -184,6 +184,10 @@ describe("Yksikkötestit", () => {
           [3, 4],
         ]);
       });
+      test("Palauttaa tyhjän taulukon takaisin", () => {
+        assert.deepStrictEqual(chunk([]), []);
+      });
+
     });
 
     describe("compact", { skip: skip_known_bugs }, () => {
@@ -673,6 +677,19 @@ describe("Yksikkötestit", () => {
         const result = toNumber("3.14");
         assert.strictEqual(result, 3.14);
       });
+      test("Muuntaa Symbolin numeroksi", () => {
+        const sym = Symbol("test");
+        const result = toNumber(sym);
+        assert.strictEqual(result, NaN);
+      });
+      test("Muuuntaa numeron numeroksi", () => {
+        const result = toNumber(42);
+        assert.strictEqual(result, 42);
+      });
+      test("Muuntaa binääriluvun numeroksi", () => {
+        const result = toNumber("0b1010");
+        assert.strictEqual(result, 10);
+      });
       test("Muuntaa boolean-arvon numeroksi", () => {
         let result = toNumber(true);
         assert.strictEqual(result, 1);
@@ -705,6 +722,20 @@ describe("Yksikkötestit", () => {
       test("Muuntaa undefinedin merkkijonoksi", () => {
         const result = toString(undefined);
         assert.strictEqual(result, "undefined");
+      });
+      test("Muuntaa taulukon merkkijonoksi", () => {
+        const arr = [1, 2, 3];
+        const result = toString(arr);
+        assert.strictEqual(result, "1,2,3");
+      });
+      test("Muuntaa '0' merkkijonoksi", () => {
+        const result = toString(0);
+        assert.strictEqual(result, "0");
+      });
+      test("Muuntaa Symbolin merkkijonoksi", () => {
+        const sym = Symbol("test");
+        const result = toString(sym);
+        assert.strictEqual(result, "Symbol(test)");
       });
       test("Muuntaa nullin merkkijonoksi", () => {
         const result = toString(null);
@@ -807,6 +838,17 @@ describe("Yksikkötestit", () => {
         const result = isEmpty(null);
         assert.strictEqual(result, true);
       });
+      test("Tunnistaa Mapin, jossa ei ole elementtejä, tyhjäksi", () => {
+        const map = new Map();
+        const result = isEmpty(map);
+        assert.strictEqual(result, true);
+      });
+      test("tunnistaa prototyypin tyhjäksi", () => {
+        function Foo() {}
+        const result = isEmpty(Foo.prototype);
+        assert.strictEqual(result, true);
+      });
+
       test("Tunnistaa undefinedin tyhjäksi", () => {
         const result = isEmpty(undefined);
         assert.strictEqual(result, true);
@@ -935,6 +977,14 @@ describe("Yksikkötestit", () => {
         const result = endsWith("hello world", "world");
         assert.strictEqual(result, true);
       });
+      test("klamppaa indeksin", () => {
+        let result = endsWith("hello world", "world", -1);
+        assert.strictEqual(result, false);
+
+        result = endsWith("hello world", "world", 100);
+        assert.strictEqual(result, true);
+      });
+
       test("Tarkistaa että merkkijono päättyy annettuun merkkijonoon halutussa positiossa", () => {
         let result = endsWith("hello world", "world", 11);
         assert.strictEqual(result, true);
