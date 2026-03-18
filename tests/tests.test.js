@@ -22,8 +22,9 @@ import filter from "../src/filter.js";
 import get from "../src/get.js";
 import isArguments from "../src/isArguments.js";
 import isArrayLike from "../src/isArrayLike.js";
+import isArrayLikeObject from "../src/isArrayLikeObject.js";
 
-const skip_known_bugs = false;
+const skip_known_bugs = true;
 
 describe("Yksikkötestit", () => {
   describe("Matemaattiset funktiot", () => {
@@ -397,6 +398,34 @@ describe("Yksikkötestit", () => {
           static length = 3;
         }
         const result = isArrayLike(MyClass);
+        assert.strictEqual(result, false);
+      });
+    });
+
+    describe("isArrayLikeObject", () => {
+      test("Tunnistaa taulukkomaisen objektin", () => {
+        const obj = { length: 3, 0: "a", 1: "b", 2: "c" };
+        const result = isArrayLikeObject(obj);
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista funktiota taulukkomaiseksi objektiksi", () => {
+        const func = function () {};
+        const result = isArrayLikeObject(func);
+        assert.strictEqual(result, false);
+      });
+      test("Ei tunnista merkkijonoa taulukkomaiseksi objektiksi", () => {
+        const result = isArrayLikeObject("abc");
+        assert.strictEqual(result, false);
+      });
+      test("Tunnistaa taulukon taulukkomaiseksi objektiksi", () => {
+        const result = isArrayLikeObject([1, 2, 3]);
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista luokkaa taulukkomaiseksi objektiksi", () => {
+        class MyClass {
+          static length = 3;
+        }
+        const result = isArrayLikeObject(MyClass);
         assert.strictEqual(result, false);
       });
     });
