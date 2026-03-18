@@ -1,4 +1,4 @@
-[![Coverage Status](https://coveralls.io/repos/github/Markus-Kivinen/AT00BY10-3012-deployment/badge.svg)](https://coveralls.io/github/Markus-Kivinen/AT00BY10-3012-deployment)
+[![Coverage Status](https://coveralls.io/repos/github/Markus-Kivinen/AT00BY10-3012-deployment/badge.svg?cache-control=no-cache)](https://coveralls.io/github/Markus-Kivinen/AT00BY10-3012-deployment)
 
 # Student template
 
