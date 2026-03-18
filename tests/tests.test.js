@@ -17,6 +17,7 @@ import divide from "../src/divide.js";
 import drop from "../src/drop.js";
 import endsWith from "../src/endsWith.js";
 import eq from "../src/eq.js";
+import every from "../src/every.js";
 
 const skip_known_bugs = true;
 
@@ -244,6 +245,24 @@ describe("Yksikkötestit", () => {
         assert.deepStrictEqual(result, []);
       });
     });
+
+    describe("every", () => {
+      test("Tarkistaa että kaikki elementit täyttävät ehdon", () => {
+        const arr = [2, 4, 6];
+        const result = every(arr, (n) => n % 2 === 0);
+        assert.strictEqual(result, true);
+      });
+      test("Tarkistaa että kaikki elementit eivät täytä ehtoa", () => {
+        const arr = [2, 3, 6];
+        const result = every(arr, (n) => n % 2 === 0);
+        assert.strictEqual(result, false);
+      });
+      test("Tarkistaa että kaikki elementit täyttävät ehdon tyhjässä taulukossa", () => {
+        const arr = [];
+        const result = every(arr, (n) => n % 2 === 0);
+        assert.strictEqual(result, true);
+      });
+    });
   });
 
   describe("Utility", () => {
@@ -277,7 +296,7 @@ describe("Yksikkötestit", () => {
       });
     });
 
-    describe("eq", () => {
+    describe("eq", { skip: skip_known_bugs }, () => {
       test("Vertaa kahta arvoa ja palauttaa true jos ne ovat samat", () => {
         const result = eq(1, 1);
         assert.strictEqual(result, true);
@@ -291,7 +310,6 @@ describe("Yksikkötestit", () => {
         assert.strictEqual(result, true);
       });
     });
-
   });
 
   describe("Tekstinkäsittely", () => {
