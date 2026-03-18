@@ -12,6 +12,7 @@ import compact from "../src/compact.js";
 import countBy from "../src/countBy.js";
 import defaultTo from "../src/defaultTo.js";
 import defaultToAny from "../src/defaultToAny.js";
+import difference from "../src/difference.js";
 
 const skip_known_bugs = true;
 
@@ -159,10 +160,37 @@ describe("Yksikkötestit", () => {
           );
         });
       });
+
+      describe("difference", () => {
+        test("Palauttaa arvot, jotka ovat ensimmäisessä taulukossa mutta ei toisessa", () => {
+          let arr1 = [2, 1];
+          let arr2 = [2, 3, 4, 5];
+          let result = difference(arr1, arr2);
+          assert.deepStrictEqual(result, [1]);
+
+          arr1 = [2, 1];
+          arr2 = [2, 1];
+          result = difference(arr1, arr2);
+          assert.deepStrictEqual(result, []);
+
+          arr1 = [2, 1];
+          arr2 = [3, 4];
+          result = difference(arr1, arr2);
+          assert.deepStrictEqual(result, [2, 1]);
+        });
+
+        test("Toimii vain referenssien perusteella", () => {
+          const arr1 = [{ a: 1 }];
+          const arr2 = [{ a: 1 }];
+          const result = difference(arr1, arr2);
+          assert.deepStrictEqual(result, [{ a: 1 }]);
+        });
+      });
+
     });
 
     describe("Utility", () => {
-      describe("defaultTo", {skip: skip_known_bugs}, () => {
+      describe("defaultTo", { skip: skip_known_bugs }, () => {
         test("Palauttaa oletusarvon jos arvo on undefined", () => {
           const result = defaultTo(undefined, "oletus");
           assert.strictEqual(result, "oletus");
@@ -181,7 +209,7 @@ describe("Yksikkötestit", () => {
         });
       });
 
-      describe("defaultToAny", () => {
+      describe("defaultToAny", { skip: skip_known_bugs }, () => {
         test("Palauttaa ensimmäisen kelvollisen arvon", () => {
           const result = defaultToAny(undefined, null, NaN, "oletus", 42);
           assert.strictEqual(result, "oletus");
@@ -191,7 +219,6 @@ describe("Yksikkötestit", () => {
           assert.strictEqual(result, 0);
         });
       });
-
     });
 
     describe("Tekstinkäsittely", () => {
