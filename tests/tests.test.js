@@ -13,6 +13,7 @@ import countBy from "../src/countBy.js";
 import defaultTo from "../src/defaultTo.js";
 import defaultToAny from "../src/defaultToAny.js";
 import difference from "../src/difference.js";
+import divide from "../src/divide.js";
 
 const skip_known_bugs = true;
 
@@ -30,6 +31,26 @@ describe("Yksikkötestit", () => {
       test("Laskee summan yhdelle positiiviselle ja yhdelle negatiiviselle luvulle", () => {
         const result = add(5, -3);
         assert.strictEqual(result, 2);
+      });
+
+      describe("divide", () => {
+        test("Jakaa kaksi lukua", () => {
+          const result = divide(6, 3);
+          assert.strictEqual(result, 2);
+        });
+        test("Palauttaaa Infinity jakamalla nollalla", () => {
+          const result = divide(6, 0);
+          console.error("Result:", result);
+          assert.strictEqual(result, Infinity);
+        });
+        test("Jakaa kaksi lukua, joissa toinen on desimaaliluku", () => {
+          const result = divide(5, 2);
+          assert.strictEqual(result, 2.5);
+        });
+        test("Jakaa kaksi negatiivista lukua", () => {
+          const result = divide(-6, -3);
+          assert.strictEqual(result, 2);
+        });
       });
 
       describe("ceil", () => {
@@ -186,7 +207,6 @@ describe("Yksikkötestit", () => {
           assert.deepStrictEqual(result, [{ a: 1 }]);
         });
       });
-
     });
 
     describe("Utility", () => {
