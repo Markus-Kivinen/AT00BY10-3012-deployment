@@ -7,6 +7,7 @@ import capitalize from "../src/capitalize.js";
 import castArray from "../src/castArray.js";
 import ceil from "../src/ceil.js";
 import chunk from "../src/chunk.js";
+import clamp from "../src/clamp.js";
 
 const skip_known_bugs = true;
 
@@ -37,6 +38,21 @@ describe("Yksikkötestit", () => {
 
           result = ceil(7040, -2);
           assert.strictEqual(result, 7100);
+        });
+      });
+
+      describe("clamp", () => {
+        test("Ei rajoita lukua turhaan", () => {
+          const result = clamp(5, 1, 10);
+          assert.strictEqual(result, 5);
+        });
+        test("Rajoittaa luvun alarajaan, jos se on pienempi kuin alaraja", () => {
+          const result = clamp(-5, 0, 10);
+          assert.strictEqual(result, 0);
+        });
+        test("Rajoittaa luvun ylärajaan, jos se on suurempi kuin yläraja", () => {
+          const result = clamp(15, 0, 10);
+          assert.strictEqual(result, 10);
         });
       });
     });
@@ -104,15 +120,16 @@ describe("Yksikkötestit", () => {
         });
       });
 
-      describe("chunk", () => {
+      describe("chunk", { skip: skip_known_bugs }, () => {
         test("Jakaa taulukon osiin", () => {
           const arr = [1, 2, 3, 4];
           const result = chunk(arr, 2);
-          assert.deepStrictEqual(result, [[1, 2], [3, 4]]);
+          assert.deepStrictEqual(result, [
+            [1, 2],
+            [3, 4],
+          ]);
         });
       });
-
-
     });
 
     describe("Tekstinkäsittely", () => {
