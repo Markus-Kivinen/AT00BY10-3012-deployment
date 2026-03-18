@@ -5,6 +5,8 @@ import at from "../src/at.js";
 import camelCase from "../src/camelCase.js";
 import capitalize from "../src/capitalize.js";
 import castArray from "../src/castArray.js";
+import ceil from "../src/ceil.js";
+import chunk from "../src/chunk.js";
 
 const skip_known_bugs = true;
 
@@ -22,6 +24,20 @@ describe("Yksikkötestit", () => {
       test("Laskee summan yhdelle positiiviselle ja yhdelle negatiiviselle luvulle", () => {
         const result = add(5, -3);
         assert.strictEqual(result, 2);
+      });
+
+      describe("ceil", () => {
+        test("Pyöristää luvun ylöspäin", () => {
+          const result = ceil(4.67);
+          assert.strictEqual(result, 5);
+        });
+        test("Pyöristää luvun ylöspäin halutulla tarkkuudella", () => {
+          let result = ceil(5.005, 2);
+          assert.strictEqual(result, 5.01);
+
+          result = ceil(7040, -2);
+          assert.strictEqual(result, 7100);
+        });
       });
     });
 
@@ -87,6 +103,16 @@ describe("Yksikkötestit", () => {
           assert.strictEqual(result, array);
         });
       });
+
+      describe("chunk", () => {
+        test("Jakaa taulukon osiin", () => {
+          const arr = [1, 2, 3, 4];
+          const result = chunk(arr, 2);
+          assert.deepStrictEqual(result, [[1, 2], [3, 4]]);
+        });
+      });
+
+
     });
 
     describe("Tekstinkäsittely", () => {
