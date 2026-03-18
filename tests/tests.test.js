@@ -23,7 +23,7 @@ import get from "../src/get.js";
 import isArguments from "../src/isArguments.js";
 import isArrayLike from "../src/isArrayLike.js";
 
-const skip_known_bugs = true;
+const skip_known_bugs = false;
 
 describe("Yksikkötestit", () => {
   describe("Matemaattiset funktiot", () => {
