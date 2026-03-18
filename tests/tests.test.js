@@ -44,7 +44,7 @@ import toString from "../src/toString.js";
 import upperFirst from "../src/upperFirst.js";
 import words from "../src/words.js";
 
-const skip_known_bugs = true;
+const skip_known_bugs = false;
 
 describe("Yksikkötestit", () => {
   describe("Matemaattiset funktiot", () => {
