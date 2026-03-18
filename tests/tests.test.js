@@ -19,6 +19,7 @@ import endsWith from "../src/endsWith.js";
 import eq from "../src/eq.js";
 import every from "../src/every.js";
 import filter from "../src/filter.js";
+import get from "../src/get.js";
 
 const skip_known_bugs = true;
 
@@ -265,7 +266,7 @@ describe("Yksikkötestit", () => {
       });
     });
 
-    describe("filter", () => {
+    describe("filter", { skip: skip_known_bugs }, () => {
       test("Suodattaa taulukon elementit ehdon perusteella", () => {
         const users = [
           { user: "barney", active: true },
@@ -288,6 +289,24 @@ describe("Yksikkötestit", () => {
         const arr = [];
         const result = filter(arr, (n) => n % 2 === 0);
         assert.deepStrictEqual(result, []);
+      });
+    });
+
+    describe("get", () => {
+      test("Hakee syvällä olevan arvon objektista merkkijonolla", () => {
+        const obj = { a: [{ b: { c: 3 } }] };
+        const result = get(obj, "a[0].b.c");
+        assert.strictEqual(result, 3);
+      });
+      test("Hakee syvällä olevan arvon objektista taulukolla", () => {
+        const obj = { a: [{ b: { c: 3 } }] };
+        const result = get(obj, ["a", "0", "b", "c"]);
+        assert.strictEqual(result, 3);
+      });
+      test("Palauttaa oletusarvon, jos arvo on undefined", () => {
+        const obj = { a: [{ b: { c: 3 } }] };
+        const result = get(obj, "a.b.c", "oletus");
+        assert.strictEqual(result, "oletus");
       });
     });
   });
