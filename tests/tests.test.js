@@ -187,7 +187,6 @@ describe("Yksikkötestit", () => {
       test("Palauttaa tyhjän taulukon takaisin", () => {
         assert.deepStrictEqual(chunk([]), []);
       });
-
     });
 
     describe("compact", { skip: skip_known_bugs }, () => {
@@ -610,6 +609,25 @@ describe("Yksikkötestit", () => {
         const arr = [1, 2, 3, 4];
         const result = slice(arr, 2);
         assert.deepStrictEqual(result, [3, 4]);
+      });
+      test("Palauttaa tyhjän taulukon takaisin", () => {
+        assert.deepStrictEqual(slice([], 5), []);
+      });
+      test("Klamppaa indeksit", () => {
+        const arr = [1, 2, 3, 4];
+        const result = slice(arr, -5, 10);
+        assert.deepStrictEqual(result, [
+          1,
+          2,
+          3,
+          4,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+        ]);
       });
       test("Leikkaa taulukon osaksi alkaen indeksistä ja päättyen loppuun", () => {
         const arr = [1, 2, 3, 4];
