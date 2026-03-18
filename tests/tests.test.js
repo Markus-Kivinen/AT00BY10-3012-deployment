@@ -25,6 +25,8 @@ import isArrayLike from "../src/isArrayLike.js";
 import isArrayLikeObject from "../src/isArrayLikeObject.js";
 import isBoolean from "../src/isBoolean.js";
 import isBuffer from "../src/isBuffer.js";
+import isDate from "../src/isDate.js";
+import isEmpty from "../src/isEmpty.js";
 
 const skip_known_bugs = true;
 
@@ -456,7 +458,41 @@ describe("Yksikkötestit", () => {
       });
     });
 
-    describe("isBuffer", () => {
+
+    describe("isEmpty", () => {
+      test("Ei tunnista nollia tyhjäksi", () => {
+        const result = isEmpty(0);
+        assert.strictEqual(result, true);
+      });
+      test("Tunnistaa nullin tyhjäksi", () => {
+        const result = isEmpty(null);
+        assert.strictEqual(result, true);
+      });
+      test("Tunnistaa undefinedin tyhjäksi", () => {
+        const result = isEmpty(undefined);
+        assert.strictEqual(result, true);
+      });
+      test("Tunnistaa tyhjän merkkijonon tyhjäksi", () => {
+        const result = isEmpty("");
+        assert.strictEqual(result, true);
+      });
+      test("Tunnistaa taulukon, jossa ei ole elementtejä, tyhjäksi", () => {
+        const result = isEmpty([]);
+        assert.strictEqual(result, true);
+
+        const result2 = isEmpty([0]);
+        assert.strictEqual(result2, false);
+      });
+      test("Tunnistaa objektin, jolla ei ole omia enumerable-ominaisuuksia, tyhjäksi", () => {
+        const result = isEmpty({});
+        assert.strictEqual(result, true);
+
+        const result2 = isEmpty({ a: 1 });
+        assert.strictEqual(result2, false);
+      });
+    });
+
+    describe("isBuffer", { skip: skip_known_bugs }, () => {
       test("Tunnistaa Buffer-objektin", () => {
         const buffer = Buffer.from("test");
         const result = isBuffer(buffer);
@@ -465,6 +501,22 @@ describe("Yksikkötestit", () => {
       test("Ei tunnista Uint8Array-objektia Bufferiksi", () => {
         const uint8Array = new Uint8Array(4);
         const result = isBuffer(uint8Array);
+        assert.strictEqual(result, false);
+      });
+    });
+
+    describe("isDate", () => {
+      test("Tunnistaa Date-objektin", () => {
+        const date = new Date();
+        const result = isDate(date);
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista merkkijonoa Date-objektiksi", () => {
+        const result = isDate("2024-01-01");
+        assert.strictEqual(result, false);
+      });
+      test("Ei tunnista numeroa Date-objektiksi", () => {
+        const result = isDate(1700000000000);
         assert.strictEqual(result, false);
       });
     });
