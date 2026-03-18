@@ -10,6 +10,7 @@ import chunk from "../src/chunk.js";
 import clamp from "../src/clamp.js";
 import compact from "../src/compact.js";
 import countBy from "../src/countBy.js";
+import defaultTo from "../src/defaultTo.js";
 
 const skip_known_bugs = true;
 
@@ -148,12 +149,37 @@ describe("Yksikkötestit", () => {
             { user: "betty", active: true },
             { user: "fred", active: false },
           ];
-          assert.deepStrictEqual(countBy(users, (value) => value.active), {
-            true: 2,
-            false: 1,
-        });
+          assert.deepStrictEqual(
+            countBy(users, (value) => value.active),
+            {
+              true: 2,
+              false: 1,
+            },
+          );
         });
       });
+    });
+
+    describe("Utility", () => {
+      describe("defaultTo", () => {
+        test("Palauttaa oletusarvon jos arvo on undefined", () => {
+          const result = defaultTo(undefined, "oletus");
+          assert.strictEqual(result, "oletus");
+        });
+        test("Palauttaa oletusarvon jos arvo on NaN", () => {
+          const result = defaultTo(NaN, "oletus");
+          assert.strictEqual(result, "oletus");
+        });
+        test("Palauttaa oletusarvon jos arvo on null", () => {
+          const result = defaultTo(null, "oletus");
+          assert.strictEqual(result, "oletus");
+        });
+        test("EI palauta oletusarvoa jos arvo on 0", () => {
+          const result = defaultTo(0, "oletus");
+          assert.strictEqual(result, 0);
+        });
+      });
+
     });
 
     describe("Tekstinkäsittely", () => {
