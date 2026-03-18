@@ -16,6 +16,7 @@ import difference from "../src/difference.js";
 import divide from "../src/divide.js";
 import drop from "../src/drop.js";
 import endsWith from "../src/endsWith.js";
+import eq from "../src/eq.js";
 
 const skip_known_bugs = true;
 
@@ -275,6 +276,22 @@ describe("Yksikkötestit", () => {
         assert.strictEqual(result, 0);
       });
     });
+
+    describe("eq", () => {
+      test("Vertaa kahta arvoa ja palauttaa true jos ne ovat samat", () => {
+        const result = eq(1, 1);
+        assert.strictEqual(result, true);
+      });
+      test("Vertaa kahta arvoa ja palauttaa false jos ne ovat eri tyyppisiä", () => {
+        const result = eq(1, "1");
+        assert.strictEqual(result, false);
+      });
+      test("Vertaa kahta arvoa ja palauttaa true jos molemmat ovat NaN", () => {
+        const result = eq(NaN, NaN);
+        assert.strictEqual(result, true);
+      });
+    });
+
   });
 
   describe("Tekstinkäsittely", () => {
