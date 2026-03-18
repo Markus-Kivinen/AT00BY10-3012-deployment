@@ -2,7 +2,7 @@ import { describe, test } from "node:test";
 import assert from "assert";
 import add from "../src/add.js";
 import at from "../src/at.js";
-
+import camelCase from "../src/camelCase.js";
 
 describe("Yksikkötestit", () => {
   describe("Matemaattiset funktiot", () => {
@@ -49,6 +49,15 @@ describe("Yksikkötestit", () => {
           const arr2 = [{ a: 1 }, { b: 2 }, { c: 3 }];
           const result3 = at(arr2, "[0].a", "[1].b", "[2].c");
           assert.deepStrictEqual(result3, [1, 2, 3]);
+        });
+      });
+    });
+
+    describe("Tekstinkäsittely", () => {
+      describe("CamelCase", () => {
+        test("Muuttaa merkkijonon kameliksi", () => {
+          const result = camelCase("hello world");
+          assert.strictEqual(result, "helloWorld");
         });
       });
     });
