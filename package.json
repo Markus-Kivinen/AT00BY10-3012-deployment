@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "lint": "npx eslint --ext .js"
+    "lint": "npx eslint --ext .js --ignore-pattern \"src/.internal/*\""
   },
   "author": "",
   "license": "MIT",
