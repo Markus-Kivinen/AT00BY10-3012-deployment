@@ -18,6 +18,7 @@ import drop from "../src/drop.js";
 import endsWith from "../src/endsWith.js";
 import eq from "../src/eq.js";
 import every from "../src/every.js";
+import filter from "../src/filter.js";
 
 const skip_known_bugs = true;
 
@@ -261,6 +262,32 @@ describe("Yksikkötestit", () => {
         const arr = [];
         const result = every(arr, (n) => n % 2 === 0);
         assert.strictEqual(result, true);
+      });
+    });
+
+    describe("filter", () => {
+      test("Suodattaa taulukon elementit ehdon perusteella", () => {
+        const users = [
+          { user: "barney", active: true },
+          { user: "fred", active: false },
+        ];
+        const result = filter(users, (user) => user.active);
+        assert.deepStrictEqual(result, [{ user: "barney", active: true }]);
+      });
+      test("Palauttaa tyhjän taulukon, jos mikään elementti ei täytä ehtoa", () => {
+        const arr = [1, 3, 5];
+        const result = filter(arr, (n) => n % 2 === 0);
+        assert.deepStrictEqual(result, []);
+      });
+      test("Palauttaa kaikki elementit, jos kaikki täyttävät ehdon", () => {
+        const arr = [2, 4, 6];
+        const result = filter(arr, (n) => n % 2 === 0);
+        assert.deepStrictEqual(result, [2, 4, 6]);
+      });
+      test("Käsittelee tyhjän taulukon oikein", () => {
+        const arr = [];
+        const result = filter(arr, (n) => n % 2 === 0);
+        assert.deepStrictEqual(result, []);
       });
     });
   });
