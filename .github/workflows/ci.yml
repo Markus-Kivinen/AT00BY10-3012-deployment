@@ -43,6 +43,7 @@ jobs:
         run: npx --yes c8 npm run test
 
       - name: Upload coverage to Coveralls
+        if: always()
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
