@@ -28,6 +28,10 @@ import isBuffer from "../src/isBuffer.js";
 import isDate from "../src/isDate.js";
 import isEmpty from "../src/isEmpty.js";
 import isLength from "../src/isLength.js";
+import isObject from "../src/isObject.js";
+import isObjectLike from "../src/isObjectLike.js";
+import isSymbol from "../src/isSymbol.js";
+import isTypedArray from "../src/isTypedArray.js";
 
 const skip_known_bugs = true;
 
@@ -372,6 +376,101 @@ describe("Yksikkötestit", () => {
         assert.strictEqual(result, false);
       });
     });
+
+    describe("isObject", () => {
+      test("Tunnistaa objektin", () => {
+        const result = isObject({ a: 1 });
+        assert.strictEqual(result, true);
+      });
+      test("Tunnistaa taulukon objektiksi", () => {
+        const result = isObject([1, 2, 3]);
+        assert.strictEqual(result, true);
+      });
+      test("Tunnistaa funktion objektiksi", () => {
+        const func = function () {};
+        const result = isObject(func);
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista nullia objektiksi", () => {
+        const result = isObject(null);
+        assert.strictEqual(result, false);
+      });
+      test("Tunnistaa Number-objektin objektiksi", () => {
+        const result = isObject(new Number(5));
+        assert.strictEqual(result, true);
+      });
+      test("Tunnistaa String-objektin objektiksi", () => {
+        const result = isObject(new String("test"));
+        assert.strictEqual(result, true);
+      });
+      test("Tunnistaa luokan objektiksi", () => {
+        class MyClass {}
+        const result = isObject(MyClass);
+        assert.strictEqual(result, true);
+      });
+    });
+
+    describe("isObjectLike", () => {
+      test("Tunnistaa objektimaisen arvon", () => {
+        const result = isObjectLike({ a: 1 });
+        assert.strictEqual(result, true);
+      });
+      test("Tunnistaa taulukomaisen objektin", () => {
+        const obj = { length: 3, 0: "a", 1: "b", 2: "c" };
+        const result = isObjectLike(obj);
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista funktiota objektimaiseksi", () => {
+        const func = function () {};
+        const result = isObjectLike(func);
+        assert.strictEqual(result, false);
+      });
+      test("Ei tunnista nullia objektimaiseksi", () => {
+        const result = isObjectLike(null);
+        assert.strictEqual(result, false);
+      });
+    });
+
+    describe("isSymbol", () => {
+      test("Tunnistaa symbolin", () => {
+        const sym = Symbol("test");
+        const result = isSymbol(sym);
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista merkkijonoa symboliksi", () => {
+        const result = isSymbol("test");
+        assert.strictEqual(result, false);
+      });
+      test("Ei tunnista numeroa symboliksi", () => {
+        const result = isSymbol(123);
+        assert.strictEqual(result, false);
+      });
+    });
+
+    describe("isTypedArray", () => {
+      test("Tunnistaa Uint8Array-objektin", () => {
+        const uint8Array = new Uint8Array(4);
+        const result = isTypedArray(uint8Array);
+        assert.strictEqual(result, true);
+      });
+      test("Tunnistaa Float32Array-objektin", () => {
+        const float32Array = new Float32Array(4);
+        const result = isTypedArray(float32Array);
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista tavallista taulukkoa typed arrayksi", () => {
+        const result = isTypedArray([1, 2, 3]);
+        assert.strictEqual(result, false);
+      });
+      test("Ei tunnista merkkijonoa typed arrayksi", () => {
+        const result = isTypedArray("abc");
+        assert.strictEqual(result, false);
+      });
+      test("Ei tunnista tyhjää taulukkoa typed arrayksi", () => {
+        const result = isTypedArray([]);
+        assert.strictEqual(result, false);
+      });
+    });
   });
 
   describe("Utility", () => {
@@ -458,7 +557,6 @@ describe("Yksikkötestit", () => {
         assert.strictEqual(result, false);
       });
     });
-
 
     describe("isEmpty", () => {
       test("Ei tunnista nollia tyhjäksi", () => {
