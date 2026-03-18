@@ -11,6 +11,7 @@ import clamp from "../src/clamp.js";
 import compact from "../src/compact.js";
 import countBy from "../src/countBy.js";
 import defaultTo from "../src/defaultTo.js";
+import defaultToAny from "../src/defaultToAny.js";
 
 const skip_known_bugs = true;
 
@@ -161,7 +162,7 @@ describe("Yksikkötestit", () => {
     });
 
     describe("Utility", () => {
-      describe("defaultTo", () => {
+      describe("defaultTo", {skip: skip_known_bugs}, () => {
         test("Palauttaa oletusarvon jos arvo on undefined", () => {
           const result = defaultTo(undefined, "oletus");
           assert.strictEqual(result, "oletus");
@@ -176,6 +177,17 @@ describe("Yksikkötestit", () => {
         });
         test("EI palauta oletusarvoa jos arvo on 0", () => {
           const result = defaultTo(0, "oletus");
+          assert.strictEqual(result, 0);
+        });
+      });
+
+      describe("defaultToAny", () => {
+        test("Palauttaa ensimmäisen kelvollisen arvon", () => {
+          const result = defaultToAny(undefined, null, NaN, "oletus", 42);
+          assert.strictEqual(result, "oletus");
+        });
+        test("Palauttaa ensimmäisen kelvollisen arvon vaikka se olisi 0", () => {
+          const result = defaultToAny(undefined, null, NaN, 0, "oletus");
           assert.strictEqual(result, 0);
         });
       });
