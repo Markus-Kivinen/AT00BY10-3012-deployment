@@ -27,6 +27,7 @@ import isBoolean from "../src/isBoolean.js";
 import isBuffer from "../src/isBuffer.js";
 import isDate from "../src/isDate.js";
 import isEmpty from "../src/isEmpty.js";
+import isLength from "../src/isLength.js";
 
 const skip_known_bugs = true;
 
@@ -489,6 +490,37 @@ describe("Yksikkötestit", () => {
 
         const result2 = isEmpty({ a: 1 });
         assert.strictEqual(result2, false);
+      });
+    });
+
+    describe("isLength", () => {
+      test("Hyväksyy positiivisen luvun", () => {
+        const result = isLength(3);
+        assert.strictEqual(result, true);
+      });
+      test("Ei hyväksy negatiivista lukua", () => {
+        const result = isLength(-1);
+        assert.strictEqual(result, false);
+      });
+      test("Ei hyväksy desimaalilukua", () => {
+        const result = isLength(3.5);
+        assert.strictEqual(result, false);
+      });
+      test("Ei hyväksy merkkijonoa", () => {
+        const result = isLength("2");
+        assert.strictEqual(result, false);
+      });
+      test("Ei hyväksy Infinitya", () => {
+        const result = isLength(Infinity);
+        assert.strictEqual(result, false);
+      });
+      test("Hyväksyy 0:n", () => {
+        const result = isLength(0);
+        assert.strictEqual(result, true);
+      });
+      test("Ei hyväksy '0'", () => {
+        const result = isLength("0");
+        assert.strictEqual(result, false);
       });
     });
 
