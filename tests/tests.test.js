@@ -32,6 +32,17 @@ import isObject from "../src/isObject.js";
 import isObjectLike from "../src/isObjectLike.js";
 import isSymbol from "../src/isSymbol.js";
 import isTypedArray from "../src/isTypedArray.js";
+import keys from "../src/keys.js";
+import map from "../src/map.js";
+import memoize from "../src/memoize.js";
+import reduce from "../src/reduce.js";
+import slice from "../src/slice.js";
+import toFinite from "../src/toFinite.js";
+import toInteger from "../src/toInteger.js";
+import toNumber from "../src/toNumber.js";
+import toString from "../src/toString.js";
+import upperFirst from "../src/upperFirst.js";
+import words from "../src/words.js";
 
 const skip_known_bugs = true;
 
@@ -471,6 +482,235 @@ describe("Yksikkötestit", () => {
         assert.strictEqual(result, false);
       });
     });
+
+    describe("keys", () => {
+      test("Palauttaa objektin omat enumerable-ominaisuudet", () => {
+        const obj = { a: 1, b: 2, c: 3 };
+        const result = keys(obj);
+        assert.deepStrictEqual(result.sort(), ["a", "b", "c"]);
+      });
+      test("Ei palauta prototyypin ominaisuuksia", () => {
+        function Foo() {
+          this.a = 1;
+          this.b = 2;
+        }
+        Foo.prototype.c = 3;
+        const result = keys(new Foo());
+        assert.deepStrictEqual(result.sort(), ["a", "b"]);
+      });
+      test("Palauttaa taulukkomaiset objektit oikein", () => {
+        const arr = ["a", "b", "c"];
+        const result = keys(arr);
+        assert.deepStrictEqual(result.sort(), ["0", "1", "2"]);
+      });
+    });
+
+    describe("map", () => {
+      test("Muuttaa taulukon elementit iterateen avulla", () => {
+        const arr = [1, 2, 3];
+        const result = map(arr, (n) => n * n);
+        assert.deepStrictEqual(result, [1, 4, 9]);
+      });
+      test("Muuttaa nullin taulukkomaiseksi objektiksi", () => {
+        const result = map(null, (n) => n * n);
+        assert.deepStrictEqual(result, []);
+      });
+      test("Muuntaa tyhjän taulukkomaisen objektin", () => {
+        const result = map([], (n) => n * n);
+        assert.deepStrictEqual(result, []);
+      });
+    });
+
+    describe("memoize", () => {
+      test("Palauttaa välimuistista samalla avaimella", () => {
+        let callCount = 0;
+        const summa = memoize((a, b) => {
+          callCount++;
+          return a + b;
+        });
+        const result1 = summa(2, 3);
+        const result2 = summa(2, 3);
+        assert.strictEqual(result1, 5);
+        assert.strictEqual(result2, 5);
+        assert.strictEqual(callCount, 1);
+      });
+
+      test("Laskee uudestaan eri avaimella", () => {
+        let callCount = 0;
+        const summa = memoize((a, b) => {
+          callCount++;
+          return a + b;
+        });
+        const result1 = summa(2, 3);
+        const result2 = summa(3, 4);
+        assert.strictEqual(result1, 5);
+        assert.strictEqual(result2, 7);
+        assert.strictEqual(callCount, 2);
+      });
+
+      test("Resolverin avulla voidaan käyttää 'syviä' objekteja", () => {
+        let callCount = 0;
+        const deepSum = memoize(
+          (obj) => {
+            callCount++;
+            return Object.values(obj).reduce((sum, n) => sum + n, 0);
+          },
+          (obj) => JSON.stringify(obj),
+        );
+        const arg1 = { a: 1, b: 2 };
+        const arg2 = { a: 1, b: 2 };
+        const result1 = deepSum(arg1);
+        const result2 = deepSum(arg2);
+        assert.strictEqual(result1, 3);
+        assert.strictEqual(result2, 3);
+        assert.strictEqual(callCount, 1);
+      });
+
+      test("Cachea voi muokata suoraan", () => {
+        const fn = memoize((n) => n * 2);
+        fn.cache.set(5, 999);
+        assert.strictEqual(fn(5), 999);
+      });
+    });
+
+    describe("reduce", () => {
+      test("Redusoi taulukon yhdeksi arvoksi", () => {
+        const arr = [1, 2, 3];
+        const result = reduce(arr, (sum, n) => sum + n, 0);
+        assert.strictEqual(result, 6);
+      });
+      test("Redusoi objektin yhdeksi arvoksi", () => {
+        const obj = { a: 1, b: 2, c: 3 };
+        const result = reduce(obj, (sum, n) => sum + n, 0);
+        assert.strictEqual(result, 6);
+      });
+      test("Redusoi ilman alku-arvoa", () => {
+        const arr = [1, 2, 3];
+        const result = reduce(arr, (sum, n) => sum + n);
+        assert.strictEqual(result, 6);
+      });
+      test("Redusoi tyhjä taulukko ilman alku-arvoa", () => {
+        const arr = [];
+        const result = reduce(arr, (sum, n) => sum + n);
+        assert.strictEqual(result, undefined);
+      });
+    });
+
+    describe("slice", () => {
+      test("Leikkaa taulukon osaksi", () => {
+        const arr = [1, 2, 3, 4];
+        const result = slice(arr, 1, 3);
+        assert.deepStrictEqual(result, [2, 3]);
+      });
+      test("Leikkaa taulukon osaksi alkaen indeksistä", () => {
+        const arr = [1, 2, 3, 4];
+        const result = slice(arr, 2);
+        assert.deepStrictEqual(result, [3, 4]);
+      });
+      test("Leikkaa taulukon osaksi alkaen indeksistä ja päättyen loppuun", () => {
+        const arr = [1, 2, 3, 4];
+        const result = slice(arr);
+        assert.deepStrictEqual(result, [1, 2, 3, 4]);
+      });
+    });
+
+    describe("words", () => {
+      test("Jakaa merkkijonon sanoiksi", () => {
+        const str = "Hello, world!";
+        const result = words(str);
+        assert.deepStrictEqual(result, ["Hello", "world"]);
+      });
+      test("Jakaa merkkijonon sanoiksi käyttäen mukautettua mallia", () => {
+        const str = "Hello, world!";
+        const result = words(str, /[^, ]+/g);
+        assert.deepStrictEqual(result, ["Hello", "world!"]);
+      });
+      test("Käsittelee tyhjän merkkijonon oikein", () => {
+        const str = "";
+        const result = words(str);
+        assert.deepStrictEqual(result, []);
+      });
+    });
+  });
+
+  describe("Muunnokset", () => {
+    describe("toFinite", () => {
+      test("Muuntaa luvun finitiiviseksi", () => {
+        const result = toFinite(3.2);
+        assert.strictEqual(result, 3.2);
+      });
+      test("Muuntaa Number.MIN_VALUE:n finitiiviseksi", () => {
+        const result = toFinite(Number.MIN_VALUE);
+        assert.strictEqual(result, 5e-324);
+      });
+      test("Muuntaa Infinity finitiiviseksi", () => {
+        const result = toFinite(Infinity);
+        assert.strictEqual(result, 1.7976931348623157e308);
+      });
+      test("Muuntaa merkkijonon finitiiviseksi", () => {
+        const result = toFinite("3.2");
+        assert.strictEqual(result, 3.2);
+      });
+    });
+
+    describe("toInteger", () => {
+      test("Muuntaa desimaaliluvun kokonaisluvuksi", () => {
+        const result = toInteger(3.7);
+        assert.strictEqual(result, 3);
+      });
+      test("Muuntaa negatiivisen desimaaliluvun kokonaisluvuksi", () => {
+        const result = toInteger(-2.3);
+        assert.strictEqual(result, -2);
+      });
+      test("Muuntaa merkkijonon kokonaisluvuksi", () => {
+        const result = toInteger("4.5");
+        assert.strictEqual(result, 4);
+      });
+    });
+
+    describe("toNumber", () => {
+      test("Muuntaa merkkijonon numeroksi", () => {
+        const result = toNumber("3.14");
+        assert.strictEqual(result, 3.14);
+      });
+      test("Muuntaa boolean-arvon numeroksi", () => {
+        let result = toNumber(true);
+        assert.strictEqual(result, 1);
+
+        result = toNumber(false);
+        assert.strictEqual(result, 0);
+      });
+      test("Muuntaa nullin numeroksi", () => {
+        const result = toNumber(null);
+        assert.strictEqual(result, 0);
+      });
+      test("Muuntaa undefinedin numeroksi", () => {
+        const result = toNumber(undefined);
+        assert.strictEqual(result, NaN);
+      });
+    });
+
+    describe("toString", () => {
+      test("Muuntaa numeron merkkijonoksi", () => {
+        const result = toString(123);
+        assert.strictEqual(result, "123");
+      });
+      test("Muuntaa boolean-arvon merkkijonoksi", () => {
+        let result = toString(true);
+        assert.strictEqual(result, "true");
+
+        result = toString(false);
+        assert.strictEqual(result, "false");
+      });
+      test("Muuntaa undefinedin merkkijonoksi", () => {
+        const result = toString(undefined);
+        assert.strictEqual(result, "undefined");
+      });
+      test("Muuntaa nullin merkkijonoksi", () => {
+        const result = toString(null);
+        assert.strictEqual(result, "null");
+      });
+    });
   });
 
   describe("Utility", () => {
@@ -660,6 +900,21 @@ describe("Yksikkötestit", () => {
       });
     });
 
+    describe("upperfirst", () => {
+      test("Muuttaa merkkijonon ensimmäisen kirjaimen isoksi", () => {
+        const result = upperFirst("hello world");
+        assert.strictEqual(result, "Hello world");
+      });
+      test("Ei tee mitään jos merkkijono on tyhjä", () => {
+        const result = upperFirst("");
+        assert.strictEqual(result, "");
+      });
+      test("Ei kaadu väärällä tyypillä", () => {
+        const result = upperFirst(123);
+        assert.strictEqual(result, "123");
+      });
+    });
+
     describe("capitalize", () => {
       test("Muuttaa merkkijonon ensimmäisen kirjaimen suureksi", () => {
         const result = capitalize("hello world");
@@ -674,6 +929,7 @@ describe("Yksikkötestit", () => {
         assert.strictEqual(result, "123");
       });
     });
+
     describe("endsWith", () => {
       test("Tarkistaa että merkkijono päättyy annettuun merkkijonoon", () => {
         const result = endsWith("hello world", "world");
