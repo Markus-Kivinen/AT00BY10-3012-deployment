@@ -20,6 +20,7 @@ import eq from "../src/eq.js";
 import every from "../src/every.js";
 import filter from "../src/filter.js";
 import get from "../src/get.js";
+import isArguments from "../src/isArguments.js";
 
 const skip_known_bugs = true;
 
@@ -142,7 +143,6 @@ describe("Yksikkötestit", () => {
         const result = castArray(undefined);
         assert.deepStrictEqual(result, [undefined]);
 
-        // Sama asia ilman maagisia toimenpiteitä
         const result2 = castArray();
         assert.deepStrictEqual(result2, [undefined]);
       });
@@ -356,6 +356,22 @@ describe("Yksikkötestit", () => {
         assert.strictEqual(result, true);
       });
     });
+
+    describe("isArguments", () => {
+      test("Tunnistaa arguments-objektin", () => {
+        const func = function () {
+          return arguments;
+        }
+        var args = func(1, 2, 3);
+        const result = isArguments(args);
+        assert.strictEqual(result, true);
+      });
+      test("Ei tunnista tavallista taulukkoa arguments-objektiksi", () => {
+        const result = isArguments([1, 2, 3]);
+        assert.strictEqual(result, false);
+      });
+    });
+
   });
 
   describe("Tekstinkäsittely", () => {
