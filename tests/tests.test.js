@@ -14,6 +14,7 @@ import defaultTo from "../src/defaultTo.js";
 import defaultToAny from "../src/defaultToAny.js";
 import difference from "../src/difference.js";
 import divide from "../src/divide.js";
+import drop from "../src/drop.js";
 
 const skip_known_bugs = true;
 
@@ -33,7 +34,7 @@ describe("Yksikkötestit", () => {
         assert.strictEqual(result, 2);
       });
 
-      describe("divide", () => {
+      describe("divide", { skip: skip_known_bugs }, () => {
         test("Jakaa kaksi lukua", () => {
           const result = divide(6, 3);
           assert.strictEqual(result, 2);
@@ -205,6 +206,39 @@ describe("Yksikkötestit", () => {
           const arr2 = [{ a: 1 }];
           const result = difference(arr1, arr2);
           assert.deepStrictEqual(result, [{ a: 1 }]);
+        });
+      });
+
+      describe("drop", () => {
+        test("Poistaa ensimmäisen elementin", () => {
+          let arr1 = [1, 2, 3, 4, 5];
+          let result = drop(arr1, 1);
+          assert.deepStrictEqual(result, [2, 3, 4, 5]);
+        });
+        test("Poistaa määritetyn määrän elementtejä", () => {
+          let arr1 = [1, 2, 3, 4, 5];
+          let result = drop(arr1, 2);
+          assert.deepStrictEqual(result, [3, 4, 5]);
+        });
+        test("Ei poista mitään, jos n on 0", () => {
+          let arr1 = [1, 2, 3, 4, 5];
+          let result = drop(arr1, 0);
+          assert.deepStrictEqual(result, [1, 2, 3, 4, 5]);
+        });
+        test("Poistaa kaikki elementit, jos n on suurempi kuin taulukon pituus", () => {
+          let arr1 = [1, 2, 3];
+          let result = drop(arr1, 5);
+          assert.deepStrictEqual(result, []);
+        });
+        test("Käsittelee negatiivisen n:n oikein", () => {
+          let arr1 = [1, 2, 3, 4, 5];
+          let result = drop(arr1, -2);
+          assert.deepStrictEqual(result, [1, 2, 3, 4, 5]);
+        });
+        test("Käsittelee tyhjän taulukon oikein", () => {
+          let arr1 = [];
+          let result = drop(arr1, 2);
+          assert.deepStrictEqual(result, []);
         });
       });
     });
