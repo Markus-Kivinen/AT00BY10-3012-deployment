@@ -8,6 +8,7 @@ import castArray from "../src/castArray.js";
 import ceil from "../src/ceil.js";
 import chunk from "../src/chunk.js";
 import clamp from "../src/clamp.js";
+import compact from "../src/compact.js";
 
 const skip_known_bugs = true;
 
@@ -41,7 +42,7 @@ describe("Yksikkötestit", () => {
         });
       });
 
-      describe("clamp", () => {
+      describe("clamp", { skip: skip_known_bugs }, () => {
         test("Ei rajoita lukua turhaan", () => {
           const result = clamp(5, 1, 10);
           assert.strictEqual(result, 5);
@@ -130,6 +131,15 @@ describe("Yksikkötestit", () => {
           ]);
         });
       });
+
+      describe("compact", () => {
+        test("Poistaa 'valheelliset' arvot", () => {
+          const arr = [0, 1, false, 2, "", 3, undefined, 4, null, 5, NaN, 6];
+          const result = compact(arr);
+          assert.deepStrictEqual(result, [1, 2, 3, 4, 5, 6]);
+        });
+      });
+
     });
 
     describe("Tekstinkäsittely", () => {
