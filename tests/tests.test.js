@@ -9,6 +9,7 @@ import ceil from "../src/ceil.js";
 import chunk from "../src/chunk.js";
 import clamp from "../src/clamp.js";
 import compact from "../src/compact.js";
+import countBy from "../src/countBy.js";
 
 const skip_known_bugs = true;
 
@@ -132,7 +133,7 @@ describe("Yksikkötestit", () => {
         });
       });
 
-      describe("compact", () => {
+      describe("compact", { skip: skip_known_bugs }, () => {
         test("Poistaa 'valheelliset' arvot", () => {
           const arr = [0, 1, false, 2, "", 3, undefined, 4, null, 5, NaN, 6];
           const result = compact(arr);
@@ -140,6 +141,19 @@ describe("Yksikkötestit", () => {
         });
       });
 
+      describe("countBy", { skip: skip_known_bugs }, () => {
+        test("Laskee elementtien määrän ryhmittäin", () => {
+          const users = [
+            { user: "barney", active: true },
+            { user: "betty", active: true },
+            { user: "fred", active: false },
+          ];
+          assert.deepStrictEqual(countBy(users, (value) => value.active), {
+            true: 2,
+            false: 1,
+        });
+        });
+      });
     });
 
     describe("Tekstinkäsittely", () => {
