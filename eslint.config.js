@@ -19,6 +19,6 @@ export default [
     },
   },
   {
-    ignores: ["dist/**"],
+    ignores: ["src/.internal/**"],
   },
 ];
