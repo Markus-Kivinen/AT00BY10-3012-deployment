@@ -76,7 +76,7 @@ describe("Objekti/taulukko funktiot", () => {
     });
   });
 
-  describe("compact", { skip: skip_known_bugs }, () => {
+  describe("compact", () => {
     test("Poistaa 'valheelliset' arvot", () => {
       const arr = [0, 1, false, 2, "", 3, undefined, 4, null, 5, NaN, 6];
       const result = compact(arr);
