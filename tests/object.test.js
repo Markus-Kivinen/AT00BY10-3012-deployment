@@ -178,7 +178,7 @@ describe("Objekti/taulukko funktiot", () => {
     });
   });
 
-  describe("filter", { skip: skip_known_bugs }, () => {
+  describe("filter", () => {
     test("Suodattaa taulukon elementit ehdon perusteella", () => {
       const users = [
         { user: "barney", active: true },
