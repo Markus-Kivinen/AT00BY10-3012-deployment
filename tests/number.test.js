@@ -5,8 +5,6 @@ import ceil from "../src/ceil.js";
 import clamp from "../src/clamp.js";
 import divide from "../src/divide.js";
 
-const skip_known_bugs = true;
-
 describe("Numeeriset funktiot", () => {
   describe("add", () => {
     test("Laskee summan kahdelle luvulle", () => {
@@ -23,7 +21,7 @@ describe("Numeeriset funktiot", () => {
     });
   });
 
-  describe("divide", { skip: skip_known_bugs }, () => {
+  describe("divide", () => {
     test("Jakaa kaksi lukua", () => {
       const result = divide(6, 3);
       assert.strictEqual(result, 2);
