@@ -57,7 +57,7 @@ describe("Numeeriset funktiot", () => {
     });
   });
 
-  describe("clamp", { skip: skip_known_bugs }, () => {
+  describe("clamp", () => {
     test("Ei rajoita lukua turhaan", () => {
       const result = clamp(5, 1, 10);
       assert.strictEqual(result, 5);
