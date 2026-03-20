@@ -32,7 +32,7 @@ function countBy(collection, iteratee) {
     if (hasOwnProperty.call(result, key)) {
       ++result[key]
     } else {
-      baseAssignValue(result, key, 0)
+      baseAssignValue(result, key, 1)
     }
     return result
   }, {})

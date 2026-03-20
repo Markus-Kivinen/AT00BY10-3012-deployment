@@ -84,7 +84,7 @@ describe("Objekti/taulukko funktiot", () => {
     });
   });
 
-  describe("countBy", { skip: skip_known_bugs }, () => {
+  describe("countBy", () => {
     test("Laskee elementtien määrän ryhmittäin", () => {
       const users = [
         { user: "barney", active: true },
