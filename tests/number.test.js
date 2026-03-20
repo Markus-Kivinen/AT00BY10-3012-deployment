@@ -1,3 +1,8 @@
+/**
+ * Tests related to numerical functions such as add, divide, ceil, and clamp.
+ *
+ */
+
 import { describe, test } from "node:test";
 import assert from "assert";
 import add from "../src/add.js";

@@ -1,3 +1,8 @@
+/**
+ * Tests related to utility functions such as defaultTo, eq, isEmpty, and memoize.
+ *
+ */
+
 import { describe, test } from "node:test";
 import assert from "assert";
 import defaultTo from "../src/defaultTo.js";
@@ -9,8 +14,8 @@ import isBuffer from "../src/isBuffer.js";
 import isDate from "../src/isDate.js";
 import isEmpty from "../src/isEmpty.js";
 import isLength from "../src/isLength.js";
-
-const skip_known_bugs = true;
+import isSymbol from "../src/isSymbol.js";
+import memoize from "../src/memoize.js";
 
 describe("Utility", () => {
   describe("defaultTo", () => {
@@ -43,7 +48,7 @@ describe("Utility", () => {
     });
   });
 
-  describe("eq", { skip: skip_known_bugs }, () => {
+  describe("eq", () => {
     test("Vertaa kahta arvoa ja palauttaa true jos ne ovat samat", () => {
       const result = eq(1, 1);
       assert.strictEqual(result, true);
@@ -172,7 +177,7 @@ describe("Utility", () => {
     });
   });
 
-  describe("isBuffer", { skip: skip_known_bugs }, () => {
+  describe("isBuffer", () => {
     test("Tunnistaa Buffer-objektin", () => {
       const buffer = Buffer.from("test");
       const result = isBuffer(buffer);
@@ -182,6 +187,74 @@ describe("Utility", () => {
       const uint8Array = new Uint8Array(4);
       const result = isBuffer(uint8Array);
       assert.strictEqual(result, false);
+    });
+  });
+
+  describe("isSymbol", () => {
+    test("Tunnistaa symbolin", () => {
+      const sym = Symbol("test");
+      const result = isSymbol(sym);
+      assert.strictEqual(result, true);
+    });
+    test("Ei tunnista merkkijonoa symboliksi", () => {
+      const result = isSymbol("test");
+      assert.strictEqual(result, false);
+    });
+    test("Ei tunnista numeroa symboliksi", () => {
+      const result = isSymbol(123);
+      assert.strictEqual(result, false);
+    });
+  });
+
+  describe("memoize", () => {
+    test("Palauttaa välimuistista samalla avaimella", () => {
+      let callCount = 0;
+      const summa = memoize((a, b) => {
+        callCount++;
+        return a + b;
+      });
+      const result1 = summa(2, 3);
+      const result2 = summa(2, 3);
+      assert.strictEqual(result1, 5);
+      assert.strictEqual(result2, 5);
+      assert.strictEqual(callCount, 1);
+    });
+
+    test("Laskee uudestaan eri avaimella", () => {
+      let callCount = 0;
+      const summa = memoize((a, b) => {
+        callCount++;
+        return a + b;
+      });
+      const result1 = summa(2, 3);
+      const result2 = summa(3, 4);
+      assert.strictEqual(result1, 5);
+      assert.strictEqual(result2, 7);
+      assert.strictEqual(callCount, 2);
+    });
+
+    test("Resolverin avulla voidaan käyttää 'syviä' objekteja", () => {
+      let callCount = 0;
+      const deepSum = memoize(
+        (obj) => {
+          callCount++;
+          return Object.values(obj).reduce((sum, n) => sum + n, 0);
+        },
+        (obj) => JSON.stringify(obj),
+      );
+      const arg1 = { a: 1, b: 2 };
+      const arg2 = { a: 1, b: 2 };
+      const result1 = deepSum(arg1);
+      const result2 = deepSum(arg2);
+      assert.strictEqual(result1, 3);
+      assert.strictEqual(result2, 3);
+      assert.strictEqual(callCount, 1);
+    });
+
+    test("Cachea voi muokata suoraan", () => {
+      const fn = memoize((n) => n * 2);
+      fn.cache.set(5, 999);
+      assert.strictEqual(fn(5), 999);
     });
   });
 

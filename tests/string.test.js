@@ -1,11 +1,13 @@
+/**
+ * Tests related to string manipulation functions such as camelCase, capitalize, endsWith, and upperFirst.
+ */
+
 import { describe, test } from "node:test";
 import assert from "assert";
 import camelCase from "../src/camelCase.js";
 import capitalize from "../src/capitalize.js";
 import endsWith from "../src/endsWith.js";
 import upperFirst from "../src/upperFirst.js";
-
-const skip_known_bugs = true;
 
 describe("Tekstinkäsittely", () => {
   describe("camelCase", () => {

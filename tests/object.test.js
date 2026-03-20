@@ -1,8 +1,6 @@
 /**
  * Tests related to  object and array functions.
  *
- *
- *
  */
 
 import { describe, test } from "node:test";
@@ -20,11 +18,9 @@ import isArrayLike from "../src/isArrayLike.js";
 import isArrayLikeObject from "../src/isArrayLikeObject.js";
 import isObject from "../src/isObject.js";
 import isObjectLike from "../src/isObjectLike.js";
-import isSymbol from "../src/isSymbol.js";
 import isTypedArray from "../src/isTypedArray.js";
 import keys from "../src/keys.js";
 import map from "../src/map.js";
-import memoize from "../src/memoize.js";
 import reduce from "../src/reduce.js";
 import slice from "../src/slice.js";
 import words from "../src/words.js";
@@ -330,22 +326,6 @@ describe("Objekti/taulukko funktiot", () => {
     });
   });
 
-  describe("isSymbol", () => {
-    test("Tunnistaa symbolin", () => {
-      const sym = Symbol("test");
-      const result = isSymbol(sym);
-      assert.strictEqual(result, true);
-    });
-    test("Ei tunnista merkkijonoa symboliksi", () => {
-      const result = isSymbol("test");
-      assert.strictEqual(result, false);
-    });
-    test("Ei tunnista numeroa symboliksi", () => {
-      const result = isSymbol(123);
-      assert.strictEqual(result, false);
-    });
-  });
-
   describe("isTypedArray", () => {
     test("Tunnistaa Uint8Array-objektin", () => {
       const uint8Array = new Uint8Array(4);
@@ -406,58 +386,6 @@ describe("Objekti/taulukko funktiot", () => {
     test("Muuntaa tyhjän taulukkomaisen objektin", () => {
       const result = map([], (n) => n * n);
       assert.deepStrictEqual(result, []);
-    });
-  });
-
-  describe("memoize", () => {
-    test("Palauttaa välimuistista samalla avaimella", () => {
-      let callCount = 0;
-      const summa = memoize((a, b) => {
-        callCount++;
-        return a + b;
-      });
-      const result1 = summa(2, 3);
-      const result2 = summa(2, 3);
-      assert.strictEqual(result1, 5);
-      assert.strictEqual(result2, 5);
-      assert.strictEqual(callCount, 1);
-    });
-
-    test("Laskee uudestaan eri avaimella", () => {
-      let callCount = 0;
-      const summa = memoize((a, b) => {
-        callCount++;
-        return a + b;
-      });
-      const result1 = summa(2, 3);
-      const result2 = summa(3, 4);
-      assert.strictEqual(result1, 5);
-      assert.strictEqual(result2, 7);
-      assert.strictEqual(callCount, 2);
-    });
-
-    test("Resolverin avulla voidaan käyttää 'syviä' objekteja", () => {
-      let callCount = 0;
-      const deepSum = memoize(
-        (obj) => {
-          callCount++;
-          return Object.values(obj).reduce((sum, n) => sum + n, 0);
-        },
-        (obj) => JSON.stringify(obj),
-      );
-      const arg1 = { a: 1, b: 2 };
-      const arg2 = { a: 1, b: 2 };
-      const result1 = deepSum(arg1);
-      const result2 = deepSum(arg2);
-      assert.strictEqual(result1, 3);
-      assert.strictEqual(result2, 3);
-      assert.strictEqual(callCount, 1);
-    });
-
-    test("Cachea voi muokata suoraan", () => {
-      const fn = memoize((n) => n * 2);
-      fn.cache.set(5, 999);
-      assert.strictEqual(fn(5), 999);
     });
   });
 

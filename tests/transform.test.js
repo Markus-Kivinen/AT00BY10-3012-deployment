@@ -1,3 +1,7 @@
+/**
+ * Tests related to type conversion functions such as castArray, toFinite, toInteger, toNumber, and toString.
+ */
+
 import { describe, test } from "node:test";
 import assert from "assert";
 import castArray from "../src/castArray.js";
