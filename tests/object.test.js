@@ -423,6 +423,11 @@ describe("Objekti/taulukko funktiot", () => {
       const result = slice(arr, 2);
       assert.deepStrictEqual(result, [3, 4]);
     });
+    test("Rajoittaa indeksit taulukon pituuteen", () => {
+      const arr = [1, 2, 3, 4];
+      const result = slice(arr, -10, 10);
+      assert.deepStrictEqual(result, [1, 2, 3, 4]);
+    });
     test("Palauttaa tyhjän taulukon takaisin", () => {
       assert.deepStrictEqual(slice([], 5), []);
     });
@@ -433,13 +438,7 @@ describe("Objekti/taulukko funktiot", () => {
         1,
         2,
         3,
-        4,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
+        4
       ]);
     });
     test("Leikkaa taulukon osaksi alkaen indeksistä ja päättyen loppuun", () => {

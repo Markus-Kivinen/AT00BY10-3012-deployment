@@ -87,12 +87,28 @@ describe("Muunnokset", () => {
       assert.strictEqual(result, NaN);
     });
     test("Muuuntaa numeron numeroksi", () => {
-      const result = toNumber(42);
+      let result = toNumber(42);
       assert.strictEqual(result, 42);
+
+      result = toNumber(0);
+      assert.strictEqual(result, 0);
     });
     test("Muuntaa binääriluvun numeroksi", () => {
       const result = toNumber("0b1010");
       assert.strictEqual(result, 10);
+    });
+    test("Muuntaa oktaaliluvun numeroksi", () => {
+      const result = toNumber("0o17");
+      assert.strictEqual(result, 15);
+    });
+    test("Muuntaa heksadesimaaliluvun numeroksi", () => {
+      const result = toNumber("0x1A");
+      assert.strictEqual(result, 26);
+    });
+      test("Muuntaa objektin numeroksi", () => {
+      const obj = { valueOf: () => 42 };
+      const result = toNumber(obj);
+      assert.strictEqual(result, 42);
     });
     test("Muuntaa boolean-arvon numeroksi", () => {
       let result = toNumber(true);
