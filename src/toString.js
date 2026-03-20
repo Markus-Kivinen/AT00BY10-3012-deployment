@@ -23,7 +23,7 @@ const INFINITY = 1 / 0
  * // => '1,2,3'
  */
 function toString(value) {
-  
+
   // Exit early for strings to avoid a performance hit in some environments.
   if (typeof value === 'string') {
     return value
@@ -36,7 +36,7 @@ function toString(value) {
     return value.toString()
   }
   const result = `${value}`
-  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result
+  return (result === '0' && (1 / value) === -INFINITY) ? '-0' : result
 }
 
 export default toString
