@@ -62,7 +62,7 @@ describe("Objekti/taulukko funktiot", () => {
     });
   });
 
-  describe("chunk", { skip: skip_known_bugs }, () => {
+  describe("chunk", () => {
     test("Jakaa taulukon osiin", () => {
       const arr = [1, 2, 3, 4];
       const result = chunk(arr, 2);
