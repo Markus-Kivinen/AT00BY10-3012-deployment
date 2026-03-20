@@ -529,6 +529,16 @@ describe("Objekti/taulukko funktiot", () => {
       const result = words(str);
       assert.deepStrictEqual(result, ["Hello", "world"]);
     });
+    test("Käsittelee emojin oikein", () => {
+      const str = "Hello🍕world";
+      const result = words(str);
+      assert.deepStrictEqual(result, ["Hello", "🍕", "world"]);
+    });
+    test("Käsittelee yksittäisen sanan oikein", () => {
+      const str = "Hello";
+      const result = words(str);
+      assert.deepStrictEqual(result, ["Hello"]);
+    });
     test("Jakaa merkkijonon sanoiksi käyttäen mukautettua mallia", () => {
       const str = "Hello, world!";
       const result = words(str, /[^, ]+/g);
@@ -538,6 +548,12 @@ describe("Objekti/taulukko funktiot", () => {
       const str = "";
       const result = words(str);
       assert.deepStrictEqual(result, []);
+    });
+    test("Kontrollimerkki ohittaa ascii-polun", () => {
+      const str = "hello\u0000world";
+      const result = words(str);
+      //assert.deepStrictEqual(result, ["hello\u0000worldworld"]);
+      assert.deepStrictEqual(result, ["hello", "world"]);
     });
   });
 });
