@@ -29,8 +29,6 @@ import reduce from "../src/reduce.js";
 import slice from "../src/slice.js";
 import words from "../src/words.js";
 
-const skip_known_bugs = true;
-
 describe("Objekti/taulukko funktiot", () => {
   describe("at", () => {
     test("Palauttaa oikean elementin yksiulotteisesta taulukosta", () => {

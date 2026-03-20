@@ -24,7 +24,7 @@ describe("Tekstinkäsittely", () => {
       const result = upperFirst("");
       assert.strictEqual(result, "");
     });
-    test("Ei kaadu väärällä tyypillä", { skip: skip_known_bugs }, () => {
+    test("Ei kaadu väärällä tyypillä", () => {
       const result = upperFirst(123);
       assert.strictEqual(result, "123");
     });
