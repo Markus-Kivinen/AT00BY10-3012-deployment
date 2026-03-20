@@ -8,7 +8,7 @@ import upperFirst from "../src/upperFirst.js";
 const skip_known_bugs = true;
 
 describe("Tekstinkäsittely", () => {
-  describe("camelCase", { skip: skip_known_bugs }, () => {
+  describe("camelCase", () => {
     test("Muuttaa merkkijonon kameliksi", () => {
       const result = camelCase("hello world");
       assert.strictEqual(result, "helloWorld");
