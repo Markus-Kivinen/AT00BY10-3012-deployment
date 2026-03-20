@@ -7,7 +7,7 @@ import divide from "../src/divide.js";
 
 const skip_known_bugs = true;
 
-describe("Matemaattiset funktiot", () => {
+describe("Numeeriset funktiot", () => {
   describe("add", () => {
     test("Laskee summan kahdelle luvulle", () => {
       const result = add(2, 3);
