@@ -13,7 +13,7 @@ import isLength from "../src/isLength.js";
 const skip_known_bugs = true;
 
 describe("Utility", () => {
-  describe("defaultTo", { skip: skip_known_bugs }, () => {
+  describe("defaultTo", () => {
     test("Palauttaa oletusarvon jos arvo on undefined", () => {
       const result = defaultTo(undefined, "oletus");
       assert.strictEqual(result, "oletus");
@@ -32,7 +32,7 @@ describe("Utility", () => {
     });
   });
 
-  describe("defaultToAny", { skip: skip_known_bugs }, () => {
+  describe("defaultToAny", () => {
     test("Palauttaa ensimmäisen kelvollisen arvon", () => {
       const result = defaultToAny(undefined, null, NaN, "oletus", 42);
       assert.strictEqual(result, "oletus");

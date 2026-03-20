@@ -17,7 +17,10 @@
  * // => 10
  */
 function defaultTo(value, defaultValue) {
-  return value == null ? defaultValue : value
+  // == covers null and undefined
+  return value == null || Number.isNaN(value)
+    ? defaultValue
+    : value
 }
 
 export default defaultTo
