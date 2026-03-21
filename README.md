@@ -180,7 +180,18 @@ Komento: `npm test`
 
 <details><summary>
 
-#### Kuvina
+#### Epäonnistuneet testit
+
+</summary>
+
+![alt text](img/test_fail.png)
+
+</details>
+<br>
+
+<details><summary>
+
+#### Korjatut testit
 
 </summary>
 
