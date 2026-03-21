@@ -33,7 +33,6 @@ describe("Numeeriset funktiot", () => {
     });
     test("Palauttaaa Infinity jakamalla nollalla", () => {
       const result = divide(6, 0);
-      console.error("Result:", result);
       assert.strictEqual(result, Infinity);
     });
     test("Jakaa kaksi lukua, joissa toinen on desimaaliluku", () => {

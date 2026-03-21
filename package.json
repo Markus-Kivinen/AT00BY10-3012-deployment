@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
+    "coverage": "npx --yes c8 npm run test",
     "lint": "npx eslint --ext .js --ignore-pattern \"src/.internal/*\""
   },
   "author": "",
@@ -20,7 +21,8 @@
     ],
     "reporter": [
       "text",
-      "lcov"
+      "lcov",
+      "text-summary"
     ]
   },
   "devDependencies": {

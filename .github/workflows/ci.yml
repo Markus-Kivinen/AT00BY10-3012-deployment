@@ -40,7 +40,7 @@ jobs:
         run: npm ci
 
       - name: Run tests with coverage
-        run: npx --yes c8 npm run test
+        run: npm run c8
 
       - name: Upload coverage to Coveralls
         if: always()
