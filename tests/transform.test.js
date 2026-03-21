@@ -52,6 +52,7 @@ describe("Muunnokset", () => {
       assert.strictEqual(result, 5e-324);
     });
     test("Muuntaa Infinity finitiiviseksi", () => {
+      // Infinity is capped to max finite IEEE-754 value.
       const result = toFinite(Infinity);
       assert.strictEqual(result, 1.7976931348623157e308);
     });

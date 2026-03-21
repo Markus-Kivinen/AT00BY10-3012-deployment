@@ -103,8 +103,13 @@ describe("Utility", () => {
   });
 
   describe("isEmpty", () => {
-    test("Ei tunnista nollia tyhjäksi", () => {
-      const result = isEmpty(0);
+    test("Tunnistaa luvut tyhjäksi", () => {
+      // Lodash style approach is to treats all numbers as empty,
+      // which is a bit odd but we'll go with it for now.
+      let result = isEmpty(0);
+      assert.strictEqual(result, true);
+
+      result = isEmpty(42);
       assert.strictEqual(result, true);
     });
     test("Tunnistaa nullin tyhjäksi", () => {
@@ -112,14 +117,24 @@ describe("Utility", () => {
       assert.strictEqual(result, true);
     });
     test("Tunnistaa Mapin, jossa ei ole elementtejä, tyhjäksi", () => {
-      const map = new Map();
-      const result = isEmpty(map);
+      let map = new Map();
+      let result = isEmpty(map);
       assert.strictEqual(result, true);
+
+      map.set("key", "value");
+      result = isEmpty(map);
+      assert.strictEqual(result, false);
     });
     test("tunnistaa prototyypin tyhjäksi", () => {
-      function Foo() {}
+      class Foo {
+        constructor() { }
+      }
       const result = isEmpty(Foo.prototype);
       assert.strictEqual(result, true);
+
+      Foo.prototype.bar = function () { };
+      const result2 = isEmpty(Foo.prototype);
+      assert.strictEqual(result2, false);
     });
 
     test("Tunnistaa undefinedin tyhjäksi", () => {
@@ -129,6 +144,9 @@ describe("Utility", () => {
     test("Tunnistaa tyhjän merkkijonon tyhjäksi", () => {
       const result = isEmpty("");
       assert.strictEqual(result, true);
+
+      const result2 = isEmpty(" ");
+      assert.strictEqual(result2, false);
     });
     test("Tunnistaa taulukon, jossa ei ole elementtejä, tyhjäksi", () => {
       const result = isEmpty([]);
@@ -253,6 +271,7 @@ describe("Utility", () => {
 
     test("Cachea voi muokata suoraan", () => {
       const fn = memoize((n) => n * 2);
+      // Verifies that memoize exposes a mutable cache map as part of its API.
       fn.cache.set(5, 999);
       assert.strictEqual(fn(5), 999);
     });

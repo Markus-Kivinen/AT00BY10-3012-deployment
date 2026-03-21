@@ -52,7 +52,8 @@ describe("Tekstinkäsittely", () => {
       const result = endsWith("hello world", "world");
       assert.strictEqual(result, true);
     });
-    test("klamppaa indeksin", () => {
+    test("rajoittaa indeksin", () => {
+      // Position is clamped to [0, string.length] before comparison.
       let result = endsWith("hello world", "world", -1);
       assert.strictEqual(result, false);
 

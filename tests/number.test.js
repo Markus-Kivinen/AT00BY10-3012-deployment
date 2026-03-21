@@ -51,9 +51,10 @@ describe("Numeeriset funktiot", () => {
       assert.strictEqual(result, 5);
     });
     test("Pyöristää luvun ylöspäin halutulla tarkkuudella", () => {
+      // Positive precision rounds decimals
       let result = ceil(5.005, 2);
       assert.strictEqual(result, 5.01);
-
+      // negative precision rounds to powers of ten
       result = ceil(7040, -2);
       assert.strictEqual(result, 7100);
     });

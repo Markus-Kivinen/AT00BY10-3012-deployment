@@ -477,7 +477,7 @@ describe("Objekti/taulukko funktiot", () => {
     test("Kontrollimerkki ohittaa ascii-polun", () => {
       const str = "hello\u0000world";
       const result = words(str);
-      //assert.deepStrictEqual(result, ["hello\u0000worldworld"]);
+      // Desired behavior for now, but could be changed in the future.
       assert.deepStrictEqual(result, ["hello", "world"]);
     });
   });
