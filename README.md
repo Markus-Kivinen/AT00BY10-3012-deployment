@@ -57,10 +57,10 @@ Project/
 
 ## Lähestymistapa ja toteutus
 
-Alkuperäinen projekti ei sisältänyt lainkaan lintteriä tai testejä, joten aloitin asentamalla ESLintin ja konfiguroimalla sen. Lähtötavoitteena oli muutaman perustestin tekeminen jokaiselle funktiolle.
+Alkuperäinen projekti ei sisältänyt lainkaan lintteriä tai testejä, joten aloitin asentamalla ESLintin ja konfiguroimalla sen. Lähtötavoitteena oli muutaman perus testin tekeminen jokaiselle funktiolle.
 
-Kävin funktiot läpi aakkosjärjestyksessä, poissulkien ne funktiot jotka sijaitsevat .internal-kansiossa, koska ne on tarkoitettu vain kirjaston sisäiseen käyttöön.  
-Aloitin luomalla yksikkötestit muutamalle ensimmäiselle funktiolle ja testasin testien ajamisen lokaalisti. Testien toiminnan varmistamisen jälkeen päätin että on aika ottaa käyttöön CI, jotta testit ja linttaus voidaan ajaa automaattisesti joka ikiselle pushille. Samalla konfiguroin lintterin poissulkemaan .internal-kansion, jotta se ei aiheuttaisi ylimääräisiä varoituksia.
+Kävin funktiot läpi aakkosjärjestyksessä, poissulkien ne funktiot jotka sijaitsevat .internal-kansiossa.  
+Aloitin luomalla yksikkötestit muutamalle ensimmäiselle funktiolle ja testasin testien ajamisen lokaalisti. Testien toiminnan varmistamisen jälkeen päätin että on aika ottaa käyttöön CI-työnkulku, jotta testit ja linttaus voidaan ajaa automaattisesti joka ikiselle pushille. Samalla konfiguroin lintterin poissulkemaan .internal-kansion, jotta se ei aiheuttaisi ylimääräisiä varoituksia.
 
 Löysin ensimmäisen virheen jo ensimmäisten testien aikana, joten loin toistaiseksi `skip_known_bugs` muuttujan, jota käytin tunnettujen virheiden ohittamiseen. Loin myös raportit jokaiselle löydetylle virheella/ongelmalle, sitä mukaa kun kohtasin ne.
 
@@ -73,7 +73,7 @@ Skripti löytyy [scripts/run-coverage.js](scripts/run-coverage.js) -tiedostosta.
 
 Projektissa oli muutamia haasteita:
 * Noden oman kattavuusraportoinnin käyttö ja konfiguroiminen, koska se ei ollut minulle ennestään tuttu työkalu, ja konfigurointi ei onnistunut yhtä kätevesti kuin c8:n kanssa.
-* Monet funktioista tekivät automaattisen tyyppimuunnoksen väärän tyyppisille syötteille, tämä vaati miettimään mikä halutun lopputuloksen tulisi olla.
+* Monet funktioista tekivät automaattisen tyyppimuunnoksen väärän tyyppisille syötteille, tämä vaati miettimään mikä halutun lopputuloksen tulisi olla, ongelmatapauksissa tutkin miten Lodash toimii.
 
 ### Ympäristö ja kirjastot
 
@@ -91,24 +91,24 @@ Kehitys riippuvuudet:
 ### Konfigurointi
 
 - ESLint
-  - Konfiguraatiotiedosto: [eslint.config.js](eslint.config.js)
+  - Konfiguraatiotiedosto: [`eslint.config.js`](eslint.config.js)
   - Linttauskomento `npm run lint`
 - coverage
-  - Ajotiedosto (sis konfiguraatiot): [scripts/run-coverage.js](scripts/run-coverage.js)
+  - Ajotiedosto (sis konfiguraatiot): [`scripts/run-coverage.js`](scripts/run-coverage.js)
   - Testikomento: `npm run coverage`
 
 ### Komennot
 
 ```bash
 npm install
-npm run test
+npm test
 npm run coverage
 npm run lint
 ```
 
 ### GitHub Actions
 
-- CI-Työnkulun tiedosto: `.github/workflows/ci.yml`
+- CI-Työnkulun tiedosto: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 - Ajetaan joka ikiselle pushille
 - Workflown vaiheet:
   - 1. linttaus
@@ -135,7 +135,8 @@ Testeissä keskityin testaamaan funktioiden perustoimintoja ja odottamattomia sy
 
 Alkuun testejä oli tarkoitus kirjoittaa vain muutama per funktio, mutta funktion käyttäytyessä oudosti kirjoitin lisää testejä kattamaan erilaisia skenaarioita. Lisäsin myös testejä siinä tapauksessa että funktion coverage oli erityisen alhainen esim. < 80%.
 
-Yhteensä testejä muodostui 168 kappaletta, joten lopuksi päätin jakaa ne vielä useampaan tiedostoon kategorioittain, jotta testit olisivat ylläpidettävämpiä. 
+Yhteensä testejä muodostui 168 kappaletta, joten lopuksi päätin jakaa ne vielä useampaan tiedostoon kategorioittain, jotta testit olisivat ylläpidettävämpiä. Testit on jaettu kategorioihin: numerot, objectit, merkkijonot, transformaatiofunktiot ja utility-funktiot.  
+Koska testit olivat niin yksinkertaisia ne ovat käytännössä itse dokementoivia, joten testitiedostot sisältävät vain tiedostotason kommentit.
 
 ### Esimerkki funktion testeistä
 
@@ -178,11 +179,14 @@ Yhteensä testejä muodostui 168 kappaletta, joten lopuksi päätin jakaa ne vie
 Komento: `npm test`
 
 ### Testitulokset
+
+
 [Testitulokset GitHub Actionsissa](https://github.com/Markus-Kivinen/AT00BY10-3012-deployment/actions/runs/23381936291/job/68022680106#step:5:1)
+
 
 <details><summary>
 
-#### Epäonnistuneet testit
+Kuvat Viallisista funktioista ja epäonnistuneista testeistä
 
 </summary>
 
@@ -193,7 +197,7 @@ Komento: `npm test`
 
 <details><summary>
 
-#### Korjatut testit
+Kuvat Korjatuista funktioista ja onnistuneista testeistä
 
 </summary>
 
@@ -203,37 +207,39 @@ Komento: `npm test`
 
 ### Virhe/Ongelma-raportit
 
-Testeissä löytyi useita ongelmia, joista jokaisesta luotiin raportti GitHubiin.  
+Testeissä löytyi useita ongelmia, joista jokaisesta luotiin erillinen raportti GitHubiin.  
 Yhteensä löydettiin:
 
-- 12 Korjattavaa virhettä, [Virhe-raportit](https://github.com/Markus-Kivinen/AT00BY10-3012-deployment/issues?q=is%3Aissue%20state%3Aclosed%20label%3Abug)
+- 12 Korjattavaa virhettä, [Virheraportit](https://github.com/Markus-Kivinen/AT00BY10-3012-deployment/issues?q=is%3Aissue%20state%3Aclosed%20label%3Abug)
 - 29 korjattavissa olevaa eqeqeq-varoitusta ESLintiltä, katso [issue #10](https://github.com/Markus-Kivinen/AT00BY10-3012-deployment/issues/10) ja [issue #1](https://github.com/Markus-Kivinen/AT00BY10-3012-deployment/issues/1)
 - 1 ohitettava `no-control-regex`-varoitus ESLintiltä, katso [issue #14](https://github.com/Markus-Kivinen/AT00BY10-3012-deployment/issues/14)
-- 2 paranneltavaa funktiota, katso [enhancement-raportit](https://github.com/Markus-Kivinen/AT00BY10-3012-deployment/issues?q=is%3Aissue%20state%3Aclosed%20label%3Aenhancement)
+- 2 paranneltavaa funktiota, katso [Parannusehdotukset](https://github.com/Markus-Kivinen/AT00BY10-3012-deployment/issues?q=is%3Aissue%20state%3Aclosed%20label%3Aenhancement)
 
-Jokainen löydetty ongelma korjattiin, minkä jälkeen testit ajettiin uudestaan varmistamaan että korjaukset olivat onnistuneita. Kaikki löydetyt ongelmat on merkitty closed-tilaan.
+Jokainen löydetty ongelma korjattiin, minkä jälkeen testit ajettiin uudestaan varmistamaan että korjaukset olivat onnistuneita.
 
 ## Kattavuusraportit
-
-Täysi kattavuusraportti saatavissa readme.MD:n alussa olevan badgen kautta tai suoraan [tästä](https://coveralls.io/github/Markus-Kivinen/AT00BY10-3012-deployment) linkistä.
 
 ### Kattavuusraportin ajo
 
 Komento: `npm run coverage`  
-Ajo-komento suorittaa scriptin `scripts/run-coverage.js`, joka sisältää myös tarvittavat konfiguraatiot.
+Ajo-komento suorittaa scriptin [`scripts/run-coverage.js`](scripts/run-coverage.js), joka sisältää myös tarvittavat konfiguraatiot.
+
+
 
 ### Kattavuusraportti
 
-Kattavuus
+Täysi kattavuusraportti on saatavilla README.md:n alussa olevan badgen kautta tai suoraan [tästä](https://coveralls.io/github/Markus-Kivinen/AT00BY10-3012-deployment) linkistä.
+
+
+Coveralls raportti näyttää että:
 
 - 1437 of 1440 relevant lines covered (99.79%)
 - 214 of 246 branches covered (86.99%)
 
-Alla on esimerkki tulostus `npm run coverage` -komennosta:
 
 <details><summary>
 
-#### Kattavuusraportti tekstinä
+Esimerkki `npm run coverage` -komennon tulostuksesta
 
 </summary>
 

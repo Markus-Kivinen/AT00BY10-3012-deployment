@@ -1,5 +1,6 @@
 /**
- * Tests related to numerical functions such as add, divide, ceil, and clamp.
+ * Tests related to numerical functions such as
+ *  add, divide, ceil, and clamp.
  *
  */
 

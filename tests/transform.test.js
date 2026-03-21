@@ -1,5 +1,6 @@
 /**
- * Tests related to type conversion functions such as castArray, toFinite, toInteger, toNumber, and toString.
+ * Tests related to type conversion functions such as
+ *  castArray, toFinite, toInteger, toNumber, and toString.
  */
 
 import { describe, test } from "node:test";
@@ -106,7 +107,7 @@ describe("Muunnokset", () => {
       const result = toNumber("0x1A");
       assert.strictEqual(result, 26);
     });
-      test("Muuntaa objektin numeroksi", () => {
+    test("Muuntaa objektin numeroksi", () => {
       const obj = { valueOf: () => 42 };
       const result = toNumber(obj);
       assert.strictEqual(result, 42);

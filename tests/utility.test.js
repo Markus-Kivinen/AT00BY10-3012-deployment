@@ -1,6 +1,6 @@
 /**
- * Tests related to utility functions such as defaultTo, eq, isEmpty, and memoize.
- *
+ * Tests related to utility functions such as
+ * defaultTo, eq, isEmpty, isLength, isBuffer, isDate, isSymbol, memoize, and isObject.
  */
 
 import { describe, test } from "node:test";
@@ -16,6 +16,11 @@ import isEmpty from "../src/isEmpty.js";
 import isLength from "../src/isLength.js";
 import isSymbol from "../src/isSymbol.js";
 import memoize from "../src/memoize.js";
+import isArrayLike from "../src/isArrayLike.js";
+import isArrayLikeObject from "../src/isArrayLikeObject.js";
+import isObject from "../src/isObject.js";
+import isObjectLike from "../src/isObjectLike.js";
+import isTypedArray from "../src/isTypedArray.js";
 
 describe("Utility", () => {
   describe("defaultTo", () => {
@@ -127,12 +132,12 @@ describe("Utility", () => {
     });
     test("tunnistaa prototyypin tyhjäksi", () => {
       class Foo {
-        constructor() { }
+        constructor() {}
       }
       const result = isEmpty(Foo.prototype);
       assert.strictEqual(result, true);
 
-      Foo.prototype.bar = function () { };
+      Foo.prototype.bar = function () {};
       const result2 = isEmpty(Foo.prototype);
       assert.strictEqual(result2, false);
     });
@@ -204,6 +209,141 @@ describe("Utility", () => {
     test("Ei tunnista Uint8Array-objektia Bufferiksi", () => {
       const uint8Array = new Uint8Array(4);
       const result = isBuffer(uint8Array);
+      assert.strictEqual(result, false);
+    });
+  });
+
+  describe("isArrayLike", () => {
+    test("Tunnistaa taulukkomaisen objektin", () => {
+      const obj = { length: 3, 0: "a", 1: "b", 2: "c" };
+      const result = isArrayLike(obj);
+      assert.strictEqual(result, true);
+    });
+    test("Ei tunnista funktiota taulukkomaiseksi objektiksi", () => {
+      const func = function () {};
+      const result = isArrayLike(func);
+      assert.strictEqual(result, false);
+    });
+    test("Tunnistaa merkkijonon taulukkomaiseksi objektiksi", () => {
+      const result = isArrayLike("abc");
+      assert.strictEqual(result, true);
+    });
+    test("Tunnistaa taulukon taulukkomaiseksi objektiksi", () => {
+      const result = isArrayLike([1, 2, 3]);
+      assert.strictEqual(result, true);
+    });
+    test("Ei tunnista luokkaa taulukkomaiseksi objektiksi", () => {
+      class MyClass {
+        static length = 3;
+      }
+      const result = isArrayLike(MyClass);
+      assert.strictEqual(result, false);
+    });
+  });
+
+  describe("isArrayLikeObject", () => {
+    test("Tunnistaa taulukkomaisen objektin", () => {
+      const obj = { length: 3, 0: "a", 1: "b", 2: "c" };
+      const result = isArrayLikeObject(obj);
+      assert.strictEqual(result, true);
+    });
+    test("Ei tunnista funktiota taulukkomaiseksi objektiksi", () => {
+      const func = function () {};
+      const result = isArrayLikeObject(func);
+      assert.strictEqual(result, false);
+    });
+    test("Ei tunnista merkkijonoa taulukkomaiseksi objektiksi", () => {
+      const result = isArrayLikeObject("abc");
+      assert.strictEqual(result, false);
+    });
+    test("Tunnistaa taulukon taulukkomaiseksi objektiksi", () => {
+      const result = isArrayLikeObject([1, 2, 3]);
+      assert.strictEqual(result, true);
+    });
+    test("Ei tunnista luokkaa taulukkomaiseksi objektiksi", () => {
+      class MyClass {
+        static length = 3;
+      }
+      const result = isArrayLikeObject(MyClass);
+      assert.strictEqual(result, false);
+    });
+  });
+
+  describe("isObject", () => {
+    test("Tunnistaa objektin", () => {
+      const result = isObject({ a: 1 });
+      assert.strictEqual(result, true);
+    });
+    test("Tunnistaa taulukon objektiksi", () => {
+      const result = isObject([1, 2, 3]);
+      assert.strictEqual(result, true);
+    });
+    test("Tunnistaa funktion objektiksi", () => {
+      const func = function () {};
+      const result = isObject(func);
+      assert.strictEqual(result, true);
+    });
+    test("Ei tunnista nullia objektiksi", () => {
+      const result = isObject(null);
+      assert.strictEqual(result, false);
+    });
+    test("Tunnistaa Number-objektin objektiksi", () => {
+      const result = isObject(new Number(5));
+      assert.strictEqual(result, true);
+    });
+    test("Tunnistaa String-objektin objektiksi", () => {
+      const result = isObject(new String("test"));
+      assert.strictEqual(result, true);
+    });
+    test("Tunnistaa luokan objektiksi", () => {
+      class MyClass {}
+      const result = isObject(MyClass);
+      assert.strictEqual(result, true);
+    });
+  });
+
+  describe("isObjectLike", () => {
+    test("Tunnistaa objektimaisen arvon", () => {
+      const result = isObjectLike({ a: 1 });
+      assert.strictEqual(result, true);
+    });
+    test("Tunnistaa taulukomaisen objektin", () => {
+      const obj = { length: 3, 0: "a", 1: "b", 2: "c" };
+      const result = isObjectLike(obj);
+      assert.strictEqual(result, true);
+    });
+    test("Ei tunnista funktiota objektimaiseksi", () => {
+      const func = function () {};
+      const result = isObjectLike(func);
+      assert.strictEqual(result, false);
+    });
+    test("Ei tunnista nullia objektimaiseksi", () => {
+      const result = isObjectLike(null);
+      assert.strictEqual(result, false);
+    });
+  });
+
+  describe("isTypedArray", () => {
+    test("Tunnistaa Uint8Array-objektin", () => {
+      const uint8Array = new Uint8Array(4);
+      const result = isTypedArray(uint8Array);
+      assert.strictEqual(result, true);
+    });
+    test("Tunnistaa Float32Array-objektin", () => {
+      const float32Array = new Float32Array(4);
+      const result = isTypedArray(float32Array);
+      assert.strictEqual(result, true);
+    });
+    test("Ei tunnista tavallista taulukkoa typed arrayksi", () => {
+      const result = isTypedArray([1, 2, 3]);
+      assert.strictEqual(result, false);
+    });
+    test("Ei tunnista merkkijonoa typed arrayksi", () => {
+      const result = isTypedArray("abc");
+      assert.strictEqual(result, false);
+    });
+    test("Ei tunnista tyhjää taulukkoa typed arrayksi", () => {
+      const result = isTypedArray([]);
       assert.strictEqual(result, false);
     });
   });
