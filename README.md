@@ -29,10 +29,8 @@ Project/
 │   ├── workflow-0.png
 │   ├── workflow-1.png
 │   ├── workflow-2.png
-│   ├── test-0.png
-│   ├── test-2.png
-│   ├── test-3.png
-│   └── test-4.png
+│   ├── test_fail.jpg
+│   ├── test_pass.jpg
 ├── scripts/                # Skripti kattavuusraporttien ajamiseen
 │   └── run-coverage.js
 ├── src/                    # Testattavat funktiot
@@ -73,15 +71,19 @@ Kirjoitin lopuillekin funktioille testit. Kaikkien testien kirjoittamisen jälke
 Lopulta päädyin vielä korvaamaan c8:n omalla skriptillä, joka ajaa testit ja luo vaadittavat tiedostot coverallsille, koska halusin välttää ylimääräisiä kirjastoja.
 Skripti löytyy [scripts/run-coverage.js](scripts/run-coverage.js) -tiedostosta.
 
-En kohdannut mitään suurempia ongelmia, mutta jouduin tutustumaan aika tarkasti miten noden oma kattavuusraportointi toimii, ja miten sen konfigurointi tapahtuu.  
+Projektissa oli muutamia haasteita:
+* Noden oman kattavuusraportoinnin käyttö ja konfiguroiminen, koska se ei ollut minulle ennestään tuttu työkalu, ja konfigurointi ei onnistunut yhtä kätevesti kuin c8:n kanssa.
+* Monet funktioista tekivät automaattisen tyyppimuunnoksen väärän tyyppisille syötteille, tämä vaati miettimään mikä halutun lopputuloksen tulisi olla.
 
 ### Ympäristö ja kirjastot
 
+- Testattu Window 10:llä ja cachyOS:llä
 - Node.js versio: 24.6.0
 - NPM versio: 11.6.1
+- testit kirjoitettu käyttäen Node.js:n sisäänrakennettua testausmoduulia
+- coverage raportit luotu käyttäen Node.js:n sisäänrakennettua kattavuusmoduulia
 
 Kehitys riippuvuudet:
-
 - ESLint: 10.0.3
   - @eslint/js: 10.0.1
   - globals: 17.4.0
