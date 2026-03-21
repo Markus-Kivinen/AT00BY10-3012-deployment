@@ -18,20 +18,21 @@
 Alkuperäinen projekti ei sisältänyt lainkaan lintteriä tai testejä, joten aloitin asentamalla ESLintin ja konfiguroimalla sen. Lähtötavoitteena oli muutaman perustestin tekeminen jokaiselle funktiolle.  
 
 Kävin funktiot läpi aakkosjärjestyksessä, poissulkien ne funktiot jotka sijaitsevat .internal-kansiossa, koska ne on tarkoitettu vain kirjaston sisäiseen käyttöön.  
-Aloitin luomalla yksikkötestit muutamalle ensimmäiselle funktiolle ja testasin testien ajamisen lokaalisti. Testien toiminnan varmistamisen jälkeen päätin on aika ottaa käyttöön CI, jotta testit ja linttaus voidaan ajaa automaattisesti joka ikiselle pushille. Samalla konfiguroin lintterin poissulkemaan .internal-kansion, jotta se ei aiheuttaisi ylimääräisiä varoituksia.
+Aloitin luomalla yksikkötestit muutamalle ensimmäiselle funktiolle ja testasin testien ajamisen lokaalisti. Testien toiminnan varmistamisen jälkeen päätin että on aika ottaa käyttöön CI, jotta testit ja linttaus voidaan ajaa automaattisesti joka ikiselle pushille. Samalla konfiguroin lintterin poissulkemaan .internal-kansion, jotta se ei aiheuttaisi ylimääräisiä varoituksia.
 
 Löysin ensimmäisen virheen jo ensimmäisten testien aikana, joten loin toistaiseksi `skip_known_bugs` muuttujan, jolla käytin tunnettujen virheiden ohittamiseen. Loin myös raportit jokaiselle löydetylle virheella/ongelmalle, sitä mukaa kun kohtasin ne.
 
-Muutaman kymmenen funktion testauksen jälkeen päätin että on aika ottaa käyttöön kattavuusraportit, jotta näen missä funktioissa on vielä kattavuusongelmia. Asensin c8-kirjaston ja konfiguroin sen tuottamaan kattavuusraportit ja poissulkemaan .internal-kansion. Lisäsin vielä tämän vaiheen CI-putken loppuun. Lisäsin myös badge:n README:hen näyttämään kattavuuden tason suoraan GitHubissa. Muutaman testin jälkeen muutin vielä putkea lähettämään kattavuusraportit Coverallsille, vaikka testit epäonnistuivatkin.
+Muutaman kymmenen funktion testauksen jälkeen päätin että on aika ottaa käyttöön kattavuusraportit, jotta näen missä funktioissa on vielä kattavuusongelmia. Asensin c8-kirjaston ja konfiguroin sen tuottamaan kattavuusraportit ja poissulkemaan .internal-kansion. Lisäsin vielä tämän vaiheen CI-työnkulun loppuun. Lisäsin myös badge:n README:hen näyttämään kattavuuden tason suoraan GitHubissa. Muutaman testin jälkeen muutin vielä työnkulun lähettämään kattavuusraportit Coverallsille, vaikka testit epäonnistuvaisitkin.
 
-Kirjoitin lopuillekin funktioille testit. Kaikkien testien kirjoittamisen jälkeen päätin jakaa luodut testit useampaan tiedostoon ja kategorioida ne. Kaikkien testien ja raporttien luomisen jälkeen siirryin korjaamaan löydettyjä ongelmia, jotka testit paljastivat.
+Kirjoitin lopuillekin funktioille testit. Kaikkien testien kirjoittamisen jälkeen päätin jakaa luodut testit useampaan tiedostoon ja kategorioida ne. Kaikkien testien ja raporttien luomisen jälkeen siirryin korjaamaan löydettyjä ongelmia, jotka testit paljastivat. Kaikkien ongelmien korjaamisen jälkeen poistin `skip_known_bugs` -muuttujan ja kaikki siihen liittyvät ohitukset, jotta testit ajaisivat kaikki funktiot läpi.
 
 Lopulta päädyin vielä korvaamaan c8:n omalla skriptillä, joka ajaa testit ja luo vaadittavat tiedostot coverallsille, koska halusin välttää ylimääräisiä kirjastoja.
-Skripti löytyy `scripts/run-coverage.js` -tiedostosta.
+Skripti löytyy [scripts/run-coverage.js](scripts/run-coverage.js) -tiedostosta.
 
 ### Ympäristö ja kirjastot
 - Node.js versio: 24.6.0
-- NPM versio: 11.6.1
+- NPM versio: 11.6.1  
+
 Kehitys riippuvuudet:
 - ESLint: 10.0.3
   * @eslint/js: 10.0.1
@@ -53,12 +54,14 @@ npm run coverage
 npm run lint
 ```
 ### GitHub Actions
-- Työnkulun tiedosto: `.github/workflows/ci.yml`
+- CI-Työnkulun tiedosto: `.github/workflows/ci.yml`
 - Ajetaan joka ikiselle pushille
 - Workflown vaiheet:
   - 1) linttaus
   - 2) testit ja kattavuusraportti.  
   kattavuusraportti lähetetään Coverallsille vaikka testit epäonnistuisivatkin.
+
+[Actions](https://github.com/Markus-Kivinen/AT00BY10-3012-deployment/actions) -sivulta löytyy kaikki työnkulut ja niiden tulokset.
 
 <details><summary>
 
@@ -69,7 +72,7 @@ npm run lint
 ![alt text](img/workflow-1.png)
 ![alt text](img/workflow-2.png)
 </details>
-<br>
+
 
 ## Testaus ja raportointi
 Testeissä keskityin testaamaan funktioiden perustoimintoja ja odottamattomia syötteitä. Testit kirjoitettiin käyttäen Node.js:n sisäänrakennettua testausmoduulia, joka oli aivan riittävä tähän projektiin.
@@ -84,7 +87,7 @@ Komento: `npm test
 ### Testitulokset
 <details><summary>
 
-### Tekstinä
+#### Tekstinä
 </summary>
 
 ```bash
@@ -371,7 +374,7 @@ $ npm test
 
 <details><summary>
 
-### Kuvina
+#### Kuvina
 </summary>
 
 ![alt text](img/test-3.png)
@@ -391,10 +394,11 @@ Yhteensä löydettiin:
 * 2 paranneltavaa funktiota, katso [enhancement-raportit](https://github.com/Markus-Kivinen/AT00BY10-3012-deployment/issues?q=is%3Aissue%20state%3Aclosed%20label%3Aenhancement)
 
 ## Kattavuusraportit
-Raportti saatavissa badgen kautta tai https://coveralls.io/github/Markus-Kivinen/AT00BY10-3012-deployment  
+Täysi kattavuusraportti saatavissa readme.MD:n alussa olevan badgen kautta tai suoraan [tästä](https://coveralls.io/github/Markus-Kivinen/AT00BY10-3012-deployment) linkistä.
 
 ### Kattavuusraportin ajo
-Komento: `npm run coverage`
+Komento: `npm run coverage`  
+Ajo-komento suorittaa scriptin `scripts/run-coverage.js`, joka sisältää myös tarvittavat konfiguraatiot.
 
 ### Kattavuusraportti
 Kattavuus
@@ -404,7 +408,7 @@ Kattavuus
 
 Alla on esimerkki tulostus `npm run coverage` -komennosta:
 <details><summary>
-Kattavuusraportti
+#### Kattavuusraportti tekstinä
 
 </summary>
 
