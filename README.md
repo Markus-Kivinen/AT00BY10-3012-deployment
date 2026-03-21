@@ -184,7 +184,7 @@ Komento: `npm test`
 
 </summary>
 
-![alt text](img/test_fail.png)
+![alt text](img/test_fail.jpg)
 
 </details>
 <br>
@@ -195,12 +195,7 @@ Komento: `npm test`
 
 </summary>
 
-![alt text](img/test-0.png)
-![alt text](img/test-1.png)
-![alt text](img/test-2.png)
-![alt text](img/test-3.png)
-![alt text](img/test-4.png)
-
+![alt text](img/test_pass.jpg)
 </details>
 <br>
 
