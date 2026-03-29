@@ -126,7 +126,7 @@ npm run lint
 
 <details><summary>
 
-## Kuvat workflowsta
+### Kuvat workflowsta
 
 </summary>
 
@@ -197,8 +197,8 @@ Komento: `npm test`
 
 <details><summary>
 
-Kuvat Viallisista funktioista ja epäonnistuneista testeistä.  
-(Suuret kuvat, suosittelen hyppäämään kohtaan Virhe/Ongelma-raportit )
+### Kuvat Viallisista funktioista ja epäonnistuneista testeistä.  
+
 
 </summary>
 
@@ -209,7 +209,7 @@ Kuvat Viallisista funktioista ja epäonnistuneista testeistä.
 
 <details><summary>
 
-Kuvat Korjatuista funktioista ja onnistuneista testeistä
+### Kuvat Korjatuista funktioista ja onnistuneista testeistä
 
 </summary>
 
@@ -251,7 +251,7 @@ Coveralls raportti näyttää että:
 
 <details><summary>
 
-Esimerkki `npm run coverage` -komennon tulostuksesta
+### Esimerkki `npm run coverage` -komennon tulostuksesta
 
 </summary>
 
