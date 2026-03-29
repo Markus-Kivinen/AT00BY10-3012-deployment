@@ -4,6 +4,7 @@
 
 ## Sisällysluettelo
 
+- [Yhteenveto](#yhteenveto)
 - [Projektin rakenne](#projektin-rakenne)
 - [Lähestymistapa ja toteutus](#lähestymistapa-ja-toteutus)
 - [Ympäristö ja kirjastot](#ympäristö-ja-kirjastot)
@@ -13,6 +14,13 @@
 - [Testaus ja raportointi](#testaus-ja-raportointi)
 - [Kattavuusraportit](#kattavuusraportit)
 - [Lopullinen arvio tuotantovalmiudesta](#lopullinen-arvio-tuotantovalmiudesta)
+
+## Yhteenveto
+- 99.72% rivikattavuus, 86.59% haarakattavuus, 97.92% kokonaiskattavuus
+- 168 testitapausta, jotka kattavat kaikki funktiot (pois lukien .internal-kansion funktiot)
+- 16 virheraporttia, jotka kaikki on korjattu
+- 30 lint-varotuista, joista 29 on korjattu ja 1 ohitettu
+- CI-työnkulku, joka ajaa testit ja linttauksen joka ikiselle pushille, ja lähettää kattavuusraportit Coverallsille
 
 ## Projektin rakenne
 
@@ -57,25 +65,24 @@ Project/
 
 ## Lähestymistapa ja toteutus
 
-Alkuperäinen projekti ei sisältänyt lainkaan lintteriä tai testejä, joten aloitin asentamalla ESLintin ja konfiguroimalla sen. Lähtötavoitteena oli muutaman perus testin tekeminen jokaiselle funktiolle.
+Alkuperäinen projekti ei sisältänyt lainkaan lintteriä tai testejä, joten aloitin asentamalla ESLintin ja konfiguroimalla sen. Tavoitteena oli aluksi tehdä muutama perus testi jokaiselle funktiolle.
 
-Kävin funktiot läpi aakkosjärjestyksessä, poissulkien ne funktiot jotka sijaitsevat .internal-kansiossa.  
-Aloitin luomalla yksikkötestit muutamalle ensimmäiselle funktiolle ja testasin testien ajamisen lokaalisti. Testien toiminnan varmistamisen jälkeen päätin että on aika ottaa käyttöön CI-työnkulku, jotta testit ja linttaus voidaan ajaa automaattisesti joka ikiselle pushille. Samalla konfiguroin lintterin poissulkemaan .internal-kansion, jotta se ei aiheuttaisi ylimääräisiä varoituksia.
+Kävin funktiot läpi aakkosjärjestyksessä, poissulkien .internal-kansiossa olevat.  
+Aloitin kirjoittamalla yksikkötestit muutamalle ensimmäiselle funktiolle ja varmistin lokaalisti, että testit toimivat oikein. Kun tämä oli kunnossa, otin käyttöön CI-työnkuluin, jotta testit ja linttaus voidaan ajetaan automaattisesti joka pushilla. Samalla konfiguroin lintterin ohittamaan .internal-kansion, jotta se ei aiheuttaisi turhia varoituksia.
 
-Löysin ensimmäisen virheen jo ensimmäisten testien aikana, joten loin toistaiseksi `skip_known_bugs` muuttujan, jota käytin tunnettujen virheiden ohittamiseen. Loin myös raportit jokaiselle löydetylle virheella/ongelmalle, sitä mukaa kun kohtasin ne.
+Ensimmäiset testit paljastivat heti virheitä, joten lisäsin väliaikaisen `skip_known_bugs`-muuttujan, jota pystyin ohittamaan jo raportuidut ongelmat testejä ajettaessa. Jokaisesta löydetystä virheestä tai ongelmasta loin erillisen raportin sitä mukaa kun niitä tuli vastaan.  
 
-Muutaman kymmenen funktion testauksen jälkeen päätin että on aika ottaa käyttöön kattavuusraportit, jotta näen missä funktioissa on vielä kattavuusongelmia. Asensin c8-kirjaston ja konfiguroin sen tuottamaan kattavuusraportit ja poissulkemaan .internal-kansion. Lisäsin vielä tämän vaiheen CI-työnkulun loppuun. Lisäsin myös badge:n README:hen näyttämään kattavuuden tason suoraan GitHubissa. Muutaman testin jälkeen muutin vielä työnkulun lähettämään kattavuusraportit Coverallsille, vaikka testit epäonnistuvaisitkin.
+Muutaman kymmenen funktion testauksen jälkeen päätin, että on aika ottaa käyttöön kattavuusraportit, jotta näen missä funktioissa on vielä kattavuusongelmia. Asensin c8-kirjaston ja konfiguroin sen ohittamaan .internal-kansion. Lisäsin kattavuusraportoinnin myös osaksi CI-työnkulkua ja lisäsin README.hen badgen näyttämään kattavuuden. Muutaman testin jälkeen muutin vielä työnkulun lähettämään kattavuusraportit Coverallsille, vaikka testit epäonnistuvaisitkin.
 
-Kirjoitin lopuillekin funktioille testit. Kaikkien testien kirjoittamisen jälkeen päätin jakaa luodut testit useampaan tiedostoon ja kategorioida ne. Kaikkien testien ja raporttien luomisen jälkeen siirryin korjaamaan löydettyjä ongelmia, jotka testit paljastivat. Kaikkien ongelmien korjaamisen jälkeen poistin `skip_known_bugs` -muuttujan ja kaikki siihen liittyvät ohitukset, jotta testit ajaisivat kaikki funktiot läpi.
+Kirjoitin lopuillekin funktioille testit ja jaoin ne lopuksi useampaan tiedostoon kategorioittain, jotta kokonaisuus pysyy selkeämpänä. Kun kaikki testit ja raportit olivat valmiina, siirryin korjaamaan testien paljastamat ongelmat. Korjausten jälkeen poistin `skip_known_bugs`-muuttujan ja siihen liittyvät ohitukset, jotta kaikki testit ajetaan normaalisti.  
 
-Lopulta päädyin vielä korvaamaan c8:n omalla skriptillä, joka ajaa testit ja luo vaadittavat tiedostot coverallsille, koska halusin välttää ylimääräisiä kirjastoja.
-Skripti löytyy [scripts/run-coverage.js](scripts/run-coverage.js) -tiedostosta.
+Lopuksi korvasin c8:n omalla skriptillä, joka ajaa testit ja tuottaa Coverallsille tarvittavat tiedostot. Näin sain pidettyä riippuvuudet minimissä. Skripti löytyy tiedostosta [scripts/run-coverage.js](scripts/run-coverage.js).  
 
-Projektissa oli muutamia haasteita:
-* Noden oman kattavuusraportoinnin käyttö ja konfiguroiminen, koska se ei ollut minulle ennestään tuttu työkalu, ja konfigurointi ei onnistunut yhtä kätevesti kuin c8:n kanssa.
-* Monet funktioista tekivät automaattisen tyyppimuunnoksen väärän tyyppisille syötteille, tämä vaati miettimään mikä halutun lopputuloksen tulisi olla, ongelmatapauksissa tutkin miten Lodash toimii.
+Projektissa tuli vastaan myös muutamia haasteita:  
+* Noden oman kattavuusraportoinnin käyttöönotto ja konfigurointi, koska se ei ollut ennestään tuttu eikä yhtä suoraviivainen kuin c8.  
+* Useat funktiot tekivät automaattista tyyppimuunnosta virheellisille syötteille, mikä pakotti miettimään odotettua toimintaa. Epäselvissä tapauksissa vertasin käyttäytymistä Lodashiin.
 
-### Ympäristö ja kirjastot
+## Ympäristö ja kirjastot
 
 - Testattu Window 10:llä ja cachyOS:llä
 - Node.js versio: 24.6.0
@@ -88,7 +95,7 @@ Kehitys riippuvuudet:
   - @eslint/js: 10.0.1
   - globals: 17.4.0
 
-### Konfigurointi
+## Konfigurointi
 
 - ESLint
   - Konfiguraatiotiedosto: [`eslint.config.js`](eslint.config.js)
@@ -97,7 +104,7 @@ Kehitys riippuvuudet:
   - Ajotiedosto (sis konfiguraatiot): [`scripts/run-coverage.js`](scripts/run-coverage.js)
   - Testikomento: `npm run coverage`
 
-### Komennot
+## Komennot
 
 ```bash
 npm install
@@ -106,7 +113,7 @@ npm run coverage
 npm run lint
 ```
 
-### GitHub Actions
+## GitHub Actions
 
 - CI-Työnkulun tiedosto: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 - Ajetaan joka ikiselle pushille
@@ -119,7 +126,7 @@ npm run lint
 
 <details><summary>
 
-### Kuvat workflowsta
+## Kuvat workflowsta
 
 </summary>
 
@@ -136,7 +143,10 @@ Testeissä keskityin testaamaan funktioiden perustoimintoja ja odottamattomia sy
 Alkuun testejä oli tarkoitus kirjoittaa vain muutama per funktio, mutta funktion käyttäytyessä oudosti kirjoitin lisää testejä kattamaan erilaisia skenaarioita. Lisäsin myös testejä siinä tapauksessa että funktion coverage oli erityisen alhainen esim. < 80%.
 
 Yhteensä testejä muodostui 168 kappaletta, joten lopuksi päätin jakaa ne vielä useampaan tiedostoon kategorioittain, jotta testit olisivat ylläpidettävämpiä. Testit on jaettu kategorioihin: numerot, objectit, merkkijonot, transformaatiofunktiot ja utility-funktiot.  
-Koska testit olivat niin yksinkertaisia ne ovat käytännössä itse dokementoivia, joten testitiedostot sisältävät vain tiedostotason kommentit.
+Koska testit olivat niin yksinkertaisia ne ovat käytännössä itse dokementoivia, joten testitiedostot sisältävät vain tiedostotason kommentit.  
+
+### Testatut/testaamattomat funktiot
+Testasin jokaisen funktion, poislukien .internal kansion sisällön.  
 
 ### Esimerkki funktion testeistä
 
@@ -172,6 +182,7 @@ Koska testit olivat niin yksinkertaisia ne ovat käytännössä itse dokementoiv
       let result = drop(arr1, 2);
       assert.deepStrictEqual(result, []);
     });
+  });
 ```
 
 ### Testien suoritus
@@ -186,7 +197,8 @@ Komento: `npm test`
 
 <details><summary>
 
-Kuvat Viallisista funktioista ja epäonnistuneista testeistä
+Kuvat Viallisista funktioista ja epäonnistuneista testeistä.  
+(Suuret kuvat, suosittelen hyppäämään kohtaan Virhe/Ongelma-raportit )
 
 </summary>
 
@@ -232,9 +244,9 @@ Täysi kattavuusraportti on saatavilla README.md:n alussa olevan badgen kautta t
 
 
 Coveralls raportti näyttää että:
-
-- 1437 of 1440 relevant lines covered (99.79%)
-- 214 of 246 branches covered (86.99%)
+- coverage: 97.812%
+- 1437 of 1440 relevant lines covered (99.72%)
+- 214 of 246 branches covered (86.59%)
 
 
 <details><summary>
@@ -415,6 +427,6 @@ Esimerkki `npm run coverage` -komennon tulostuksesta
 
 ## Lopullinen arvio tuotantovalmiudesta
 
-Alkuperäinen kirjasto oli täysin testaamaton ja linttaamaton, joten se ei ollut tuotantovalmiudessa laisinkaan. Se sisälsi myös huomattavan määrän erilaisia ongelmia, jotka olisivat varmasti aiheuttaneet ongelmia.
+Alkuperäinen kirjasto oli täysin ilman testejä ja linttausta, joten sitä ei voinut pitää tuotantovalmiina. Lisäksi siinä oli useita ongelmia, jotka olisivat todennäköisesti aiheuttaneet virheitä käytössä.
 
-Löydettyjen ongelmien korjaamisen jälkeen kirjaston rivikattavuus on erinomaisella tasolla, mutta haarakattavuudessa on vielä parantamisen varaa, joten oudot syötteet voivat vielä mahdollisesti aiheuttaa ongelmia, nämä ovat kuitenkin ns. edge-caseja, joten uskon että kirjasto on valmist tuotantoon. 
+Korjausten jälkeen rivikattavuus on erittäin hyvä, mutta haarakattavuudessa on vielä jonkin verran puutteita. Tämä tarkoittaa, että joissain poikkeustilanteissa voi edelleen ilmetä ongelmia, mutta ne liittyvät lähinnä epätavallisiin syötteisiin. Kokonaisuutena kirjasto on nyt kuitenkin riittävän hyvä tuotantokäyttöön.  
